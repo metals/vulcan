@@ -11,10 +11,5 @@
     "polymer",
     "chromeapp"
   ],
-  "license": "MIT",
-  "ignore": [
-    "**/.*",
-    "vulcan.dev",
-    "*.sh"
-  ]
+  "license": "MIT"
 }
