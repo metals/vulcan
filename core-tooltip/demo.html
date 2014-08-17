@@ -1,0 +1,634 @@
+<!doctype html>
+<html lang="en">
+<head>
+
+  <meta charset="utf-8">
+  <title>Core Tooltip</title>
+
+  <script src="../platform/platform.js"></script>
+
+  <div hidden><!--
+Copyright (c) 2014 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+
+<!--
+The `core-tooltip` element creates a hover tooltip centered for the content
+it contains. It can be positioned on the top|bottom|left|right of content using
+the `position` attribute.
+
+To include HTML in the tooltip, include the `tip` attribute on the relevant
+content.
+
+<b>Example</b>:
+
+    <core-tooltip label="I'm a tooltip">
+      <span>Hover over me.</span>
+    </core-tooltip>
+
+<b>Example</b> - positioning the tooltip to the right:
+
+    <core-tooltip label="I'm a tooltip to the right" position="right">
+      <polymer-ui-icon-button icon="drawer"></polymer-ui-icon-button>
+    </core-tooltip>
+
+<b>Example</b> - no arrow and showing by default:
+
+    <core-tooltip label="Tooltip with no arrow and always on" noarrow show>
+      <img src="image.jpg">
+    </core-tooltip>
+
+<b>Example</b> - rich tooltip using the `tip` attribute:
+
+    <core-tooltip>
+      <div>Example of a rich information tooltip</div>
+      <div tip>
+        <img src="profile.jpg">Foo <b>Bar</b> - <a href="#">@baz</a>
+      </div>
+    </core-tooltip>
+
+@group Polymer Core Elements
+@element core-tooltip
+@homepage http://polymer.github.io/core-tooltip
+-->
+
+<div hidden><!--
+Copyright (c) 2014 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+
+<!--
+Copyright (c) 2014 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+<style shim-shadowdom="">
+/*******************************
+          Flex Layout
+*******************************/
+
+html /deep/ [layout][horizontal], html /deep/ [layout][vertical] {
+  display: -ms-flexbox;
+  display: -webkit-flex;
+  display: flex;
+}
+
+html /deep/ [layout][horizontal][inline], html /deep/ [layout][vertical][inline] {
+  display: -ms-inline-flexbox;
+  display: -webkit-inline-flex;
+  display: inline-flex;
+}
+
+html /deep/ [layout][horizontal] {
+  -ms-flex-direction: row;
+  -webkit-flex-direction: row;
+  flex-direction: row;
+}
+
+html /deep/ [layout][horizontal][reverse] {
+  -ms-flex-direction: row-reverse;
+  -webkit-flex-direction: row-reverse;
+  flex-direction: row-reverse;
+}
+
+html /deep/ [layout][vertical] {
+  -ms-flex-direction: column;
+  -webkit-flex-direction: column;
+  flex-direction: column;
+}
+
+html /deep/ [layout][vertical][reverse] {
+  -ms-flex-direction: column-reverse;
+  -webkit-flex-direction: column-reverse;
+  flex-direction: column-reverse;
+}
+
+html /deep/ [layout][wrap] {
+  -ms-flex-wrap: wrap;
+  -webkit-flex-wrap: wrap;
+  flex-wrap: wrap;
+}
+
+html /deep/ [layout][wrap-reverse] {
+  -ms-flex-wrap: wrap-reverse;
+  -webkit-flex-wrap: wrap-reverse;
+  flex-wrap: wrap-reverse;
+}
+
+html /deep/ [flex] {
+  -ms-flex: 1;
+  -webkit-flex: 1;
+  flex: 1;
+}
+
+html /deep/ [flex][auto] {
+  -ms-flex: 1 1 auto;
+  -webkit-flex: 1 1 auto;
+  flex: 1 1 auto;
+}
+
+html /deep/ [flex][none] {
+  -ms-flex: none;
+  -webkit-flex: none;
+  flex: none;
+}
+
+html /deep/ [flex][one] {
+  -ms-flex: 1;
+  -webkit-flex: 1;
+  flex: 1;
+}
+
+html /deep/ [flex][two] {
+  -ms-flex: 2;
+  -webkit-flex: 2;
+  flex: 2;
+}
+
+html /deep/ [flex][three] {
+  -ms-flex: 3;
+  -webkit-flex: 3;
+  flex: 3;
+}
+
+html /deep/ [flex][four] {
+  -ms-flex: 4;
+  -webkit-flex: 4;
+  flex: 4;
+}
+
+html /deep/ [flex][five] {
+  -ms-flex: 5;
+  -webkit-flex: 5;
+  flex: 5;
+}
+
+html /deep/ [flex][six] {
+  -ms-flex: 6;
+  -webkit-flex: 6;
+  flex: 6;
+}
+
+html /deep/ [flex][seven] {
+  -ms-flex: 7;
+  -webkit-flex: 7;
+  flex: 7;
+}
+
+html /deep/ [flex][eight] {
+  -ms-flex: 8;
+  -webkit-flex: 8;
+  flex: 8;
+}
+
+html /deep/ [flex][nine] {
+  -ms-flex: 9;
+  -webkit-flex: 9;
+  flex: 9;
+}
+
+html /deep/ [flex][ten] {
+  -ms-flex: 10;
+  -webkit-flex: 10;
+  flex: 10;
+}
+
+html /deep/ [flex][eleven] {
+  -ms-flex: 11;
+  -webkit-flex: 11;
+  flex: 11;
+}
+
+html /deep/ [flex][twelve] {
+  -ms-flex: 12;
+  -webkit-flex: 12;
+  flex: 12;
+}
+
+/* alignment in cross axis */
+
+html /deep/ [layout][start] {
+  -ms-flex-align: start;
+  -webkit-align-items: flex-start;
+  align-items: flex-start;
+}
+
+html /deep/ [layout][center], html /deep/ [layout][center-center] {
+  -ms-flex-align: center;
+  -webkit-align-items: center;
+  align-items: center;
+}
+
+html /deep/ [layout][end] {
+  -ms-flex-align: end;
+  -webkit-align-items: flex-end;
+  align-items: flex-end;
+}
+
+/* alignment in main axis */
+
+html /deep/ [layout][start-justified] {
+  -ms-flex-pack: start;
+  -webkit-justify-content: flex-start;
+  justify-content: flex-start;
+}
+
+html /deep/ [layout][center-justified], html /deep/ [layout][center-center] {
+  -ms-flex-pack: center;
+  -webkit-justify-content: center;
+  justify-content: center;
+}
+
+html /deep/ [layout][end-justified] {
+  -ms-flex-pack: end;
+  -webkit-justify-content: flex-end;
+  justify-content: flex-end;
+}
+
+html /deep/ [layout][around-justified] {
+  -ms-flex-pack: around;
+  -webkit-justify-content: space-around;
+  justify-content: space-around;
+}
+
+html /deep/ [layout][justified] {
+  -ms-flex-pack: justify;
+  -webkit-justify-content: space-between;
+  justify-content: space-between;
+}
+
+/* self alignment */
+
+html /deep/ [self-start] {
+  -ms-align-self: flex-start;
+  -webkit-align-self: flex-start;
+  align-self: flex-start;
+}
+
+html /deep/ [self-center] {
+  -ms-align-self: center;
+  -webkit-align-self: center;
+  align-self: center;
+}
+
+html /deep/ [self-end] {
+  -ms-align-self: flex-end;
+  -webkit-align-self: flex-end;
+  align-self: flex-end;
+}
+
+html /deep/ [self-stretch] {
+  -ms-align-self: stretch;
+  -webkit-align-self: stretch;
+  align-self: stretch;
+}
+
+/*******************************
+          Other Layout
+*******************************/
+
+html /deep/ [block] {
+  display: block;
+}
+
+/* ie support for hidden */
+html /deep/ [hidden] {
+  display: none !important;
+}
+
+html /deep/ [relative] {
+  position: relative;
+}
+
+html /deep/ [fit] {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+}
+
+body[fullbleed] {
+  margin: 0;
+  height: 100vh;
+}
+
+/*******************************
+            Other
+*******************************/
+
+html /deep/ [segment], html /deep/ segment {
+  display: block;
+  position: relative;
+  -webkit-box-sizing: border-box;
+  -ms-box-sizing: border-box;
+  box-sizing: border-box;
+  margin: 1em 0.5em;
+  padding: 1em;
+  background-color: white;
+  -webkit-box-shadow: 0px 0px 0px 1px rgba(0, 0, 0, 0.1);
+  box-shadow: 0px 0px 0px 1px rgba(0, 0, 0, 0.1);
+  border-radius: 5px 5px 5px 5px;
+}
+
+</style>
+
+<script src="../polymer/polymer.js"></script>
+<!--<link rel="import" href="../polymer-dev/polymer.html">--> </div>
+
+<!-- TODO: would be nice to inherit from label to get .htmlFor, and .control,
+           but the latter is readonly. -->
+<!-- TODO: support off center arrows. -->
+<!-- TODO: detect mobile and apply the .large class, instead of manual
+           control. -->
+<!-- TODO: possibly reuse core-overlay. -->
+<polymer-element name="core-tooltip" attributes="noarrow position label show" tabindex="0" assetpath="">
+<template>
+
+  <style>/* Copyright (c) 2014 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt */
+
+:host {
+  box-sizing: border-box;
+  position: relative;
+  display: inline-block;
+}
+
+:host(:hover) .polymer-tooltip {
+  visibility: visible !important;
+}
+
+:host(:focus) .polymer-tooltip {
+  visibility: visible !important;
+}
+
+.polymer-tooltip:not(.show) {
+  visibility: hidden;
+}
+
+.polymer-tooltip {
+   pointer-events: none; 
+  position: absolute;
+  display: flex;
+  font-size: 10px;
+  font-family: sans-serif;
+  padding: 8px;
+  color: white;
+  background-color: rgba(0,0,0,0.8);
+  box-sizing: border-box;
+  border-radius: 3px; /* TODO: not in spec. */
+  white-space: nowrap;
+  line-height: 6px;
+  z-index: 1002; /* TODO: this is brittle. */
+}
+
+:host([large]) .polymer-tooltip {
+  line-height: 14px;
+  font-size: 14px;
+  padding: 16px;
+}
+
+.polymer-tooltip.noarrow::after {
+  display: none;
+}
+
+.polymer-tooltip::after {
+  position: absolute;
+  border: solid transparent;
+  content: '';
+  height: 0;
+  width: 0;
+  border-width: 4px;
+}
+
+.top {
+  margin-bottom: 10px; /* TODO: not specified in spec */
+  bottom: 100%;
+}
+
+.right {
+  margin-left: 10px; /* TODO: not specified in spec */
+  left: 100%;
+}
+
+.bottom {
+  top: 100%;
+  margin-top: 10px; /* TODO: not specified in spec */
+}
+
+.left {
+  margin-right: 10px; /* TODO: not specified in spec */
+  right: 100%;
+}
+
+.polymer-tooltip.bottom::after {
+  bottom: 100%;
+  left: calc(50% - 4px);
+  border-bottom-color: rgba(0,0,0,0.8);
+}
+
+.polymer-tooltip.left::after {
+  left: 100%;
+  top: calc(50% - 4px);
+  border-left-color: rgba(0,0,0,0.8);
+}
+
+.polymer-tooltip.top::after {
+  top: 100%;
+  left: calc(50% - 4px);
+  border-top-color: rgba(0,0,0,0.8);
+}
+
+.polymer-tooltip.right::after {
+  right: 100%;
+  top: calc(50% - 4px);
+  border-right-color: rgba(0,0,0,0.8);
+}
+</style>
+
+  <div id="tooltip" class="polymer-tooltip {{position}} {{ {noarrow: noarrow, show: show} | tokenList}}">
+    <content select="[tip]">{{label}}</content>
+  </div>
+
+  <content></content>
+
+</template>
+
+</polymer-element>
+<script src="core-tooltip.js"></script></div>
+
+  <style>
+    body {
+      font-family: "Open Sans", sans-serif;
+      font-weight: 300;
+      padding: 24px;
+    }
+
+    section {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .example {
+      margin: 35px 15px;
+    }
+
+    .example > * {
+      margin: 0 15px;
+    }
+
+    .fakebutton {
+      box-shadow: 0 0 3px #aaa inset;
+      border-radius: 3px;
+      padding: 7px 5px;
+    }
+    .fakebutton:hover {
+      background-color: white;
+    }
+
+    img {
+      width: 400px;
+      height: 150px;
+      object-fit: cover;
+    }
+
+    img.large {
+      border: 15px solid white;
+      box-sizing: border-box;
+    }
+
+    .profile {
+      width: 60px;
+      height: auto;
+      border-radius: 50%;
+      vertical-align: middle;
+    }
+
+    a {
+      color: currentcolor;
+      text-decoration: none;
+    }
+
+    .rich {
+      background: hotpink;
+      color: white;
+      padding:20px;
+      border-radius: 5px;
+    }
+
+    core-tooltip.fancy::shadow .polymer-tooltip {
+      opacity: 0;
+      -webkit-transition: all 300ms cubic-bezier(0,1.92,.99,1.07);
+      transition: all 300ms cubic-bezier(0,1.92,.99,1.07);
+      -webkit-transform: translate3d(0, -10px, 0);
+      transform: translate3d(0, -10px, 0);
+    }
+
+    core-tooltip.fancy:hover::shadow .polymer-tooltip,
+    core-tooltip.fancy:focus::shadow .polymer-tooltip {
+      opacity: 1;
+      -webkit-transform: translate3d(0, 0, 0);
+      transform: translate3d(0, 0, 0);
+    }
+  </style>
+  <style shim-shadowdom2="">
+    .on /deep/ .polymer-tooltip {
+      visibility: visible;
+    }
+  </style>
+
+</head>
+<body unresolved="">
+
+  <article onclick="this.classList.toggle(&apos;on&apos;);">
+
+    <em>click the page to toggle all examples...</em>
+    
+      <section class="small">
+
+        <div class="example">
+
+          <core-tooltip label="position=&quot;left&quot;" position="left">
+            <div class="fakebutton">|||</div>
+          </core-tooltip>
+
+          <core-tooltip label="position=&quot;top&quot;" position="top">
+            <div class="fakebutton">|||</div>
+          </core-tooltip>
+
+          <core-tooltip label="position=&quot;bottom&quot;" position="bottom">
+            <div class="fakebutton">|||</div>
+          </core-tooltip>
+
+          <core-tooltip label="position=&quot;right&quot;" position="right">
+            <div class="fakebutton">|||</div>
+          </core-tooltip>
+
+        </div>
+
+        <div class="example">
+
+          <core-tooltip label="Fancy effect" class="fancy">
+            <img src="https://pbs.twimg.com/profile_images/378800000548263523/c110b0a4c3e3e4d3dcce1d2020f3eded.jpeg
+        " class="profile">
+          </core-tooltip>
+
+        </div>
+
+      </section>
+
+      <section>
+
+        <div class="example">
+
+          <core-tooltip>
+            <div class="rich">Rich tooltip with HTML</div>
+            <div tip="">
+              <img src="https://pbs.twimg.com/profile_images/378800000548263523/c110b0a4c3e3e4d3dcce1d2020f3eded.jpeg
+        " class="profile" style="width: 40px;margin-right: 8px;">Eric <b>Bidelman</b> - <a href="#">@ebidel</a></div>
+          </core-tooltip>
+
+        </div>
+
+        <div class="example">
+
+          <core-tooltip label="&lt;core-tooltip large&gt;" large="">
+            Larger tooltips for mobile
+          </core-tooltip>
+
+        </div>
+
+      </section>
+
+      <section>
+
+        <div class="example">
+
+          <core-tooltip label="Tooltip with no arrow and always on: &lt;core-tooltip noarrow show&gt;" position="bottom" noarrow="" show="">
+            <img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/3/building.jpg" class="large">
+          </core-tooltip>
+
+        </div>
+
+      </section>
+    
+  </article>
+
+<script src="demo.js"></script></body>
+</html>

@@ -1,0 +1,1063 @@
+<!doctype html>
+<!--
+Copyright (c) 2014 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+<html>
+<head>
+  <title>core-selector-basic</title>
+  <script src="../../platform/platform.js"></script>
+  <div hidden><!--
+Copyright (c) 2014 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+<style>@charset "utf-8";
+
+body {
+  margin:0;
+}
+
+#mocha {
+  font: 20px/1.5 "Helvetica Neue", Helvetica, Arial, sans-serif;
+  margin: 60px 50px;
+}
+
+#mocha ul,
+#mocha li {
+  margin: 0;
+  padding: 0;
+}
+
+#mocha ul {
+  list-style: none;
+}
+
+#mocha h1,
+#mocha h2 {
+  margin: 0;
+}
+
+#mocha h1 {
+  margin-top: 15px;
+  font-size: 1em;
+  font-weight: 200;
+}
+
+#mocha h1 a {
+  text-decoration: none;
+  color: inherit;
+}
+
+#mocha h1 a:hover {
+  text-decoration: underline;
+}
+
+#mocha .suite .suite h1 {
+  margin-top: 0;
+  font-size: .8em;
+}
+
+#mocha .hidden {
+  display: none;
+}
+
+#mocha h2 {
+  font-size: 12px;
+  font-weight: normal;
+  cursor: pointer;
+}
+
+#mocha .suite {
+  margin-left: 15px;
+}
+
+#mocha .test {
+  margin-left: 15px;
+  overflow: hidden;
+}
+
+#mocha .test.pending:hover h2::after {
+  content: '(pending)';
+  font-family: arial, sans-serif;
+}
+
+#mocha .test.pass.medium .duration {
+  background: #c09853;
+}
+
+#mocha .test.pass.slow .duration {
+  background: #b94a48;
+}
+
+#mocha .test.pass::before {
+  content: '✓';
+  font-size: 12px;
+  display: block;
+  float: left;
+  margin-right: 5px;
+  color: #00d6b2;
+}
+
+#mocha .test.pass .duration {
+  font-size: 9px;
+  margin-left: 5px;
+  padding: 2px 5px;
+  color: #fff;
+  -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.2);
+  -moz-box-shadow: inset 0 1px 1px rgba(0,0,0,.2);
+  box-shadow: inset 0 1px 1px rgba(0,0,0,.2);
+  -webkit-border-radius: 5px;
+  -moz-border-radius: 5px;
+  -ms-border-radius: 5px;
+  -o-border-radius: 5px;
+  border-radius: 5px;
+}
+
+#mocha .test.pass.fast .duration {
+  display: none;
+}
+
+#mocha .test.pending {
+  color: #0b97c4;
+}
+
+#mocha .test.pending::before {
+  content: '◦';
+  color: #0b97c4;
+}
+
+#mocha .test.fail {
+  color: #c00;
+}
+
+#mocha .test.fail pre {
+  color: black;
+}
+
+#mocha .test.fail::before {
+  content: '✖';
+  font-size: 12px;
+  display: block;
+  float: left;
+  margin-right: 5px;
+  color: #c00;
+}
+
+#mocha .test pre.error {
+  color: #c00;
+  max-height: 300px;
+  overflow: auto;
+}
+
+/**
+ * (1): approximate for browsers not supporting calc
+ * (2): 42 = 2*15 + 2*10 + 2*1 (padding + margin + border)
+ *      ^^ seriously
+ */
+#mocha .test pre {
+  display: block;
+  float: left;
+  clear: left;
+  font: 12px/1.5 monaco, monospace;
+  margin: 5px;
+  padding: 15px;
+  border: 1px solid #eee;
+  max-width: 85%; /*(1)*/
+  max-width: calc(100% - 42px); /*(2)*/
+  word-wrap: break-word;
+  border-bottom-color: #ddd;
+  -webkit-border-radius: 3px;
+  -webkit-box-shadow: 0 1px 3px #eee;
+  -moz-border-radius: 3px;
+  -moz-box-shadow: 0 1px 3px #eee;
+  border-radius: 3px;
+}
+
+#mocha .test h2 {
+  position: relative;
+}
+
+#mocha .test a.replay {
+  position: absolute;
+  top: 3px;
+  right: 0;
+  text-decoration: none;
+  vertical-align: middle;
+  display: block;
+  width: 15px;
+  height: 15px;
+  line-height: 15px;
+  text-align: center;
+  background: #eee;
+  font-size: 15px;
+  -moz-border-radius: 15px;
+  border-radius: 15px;
+  -webkit-transition: opacity 200ms;
+  -moz-transition: opacity 200ms;
+  transition: opacity 200ms;
+  opacity: 0.3;
+  color: #888;
+}
+
+#mocha .test:hover a.replay {
+  opacity: 1;
+}
+
+#mocha-report.pass .test.fail {
+  display: none;
+}
+
+#mocha-report.fail .test.pass {
+  display: none;
+}
+
+#mocha-report.pending .test.pass,
+#mocha-report.pending .test.fail {
+  display: none;
+}
+#mocha-report.pending .test.pass.pending {
+  display: block;
+}
+
+#mocha-error {
+  color: #c00;
+  font-size: 1.5em;
+  font-weight: 100;
+  letter-spacing: 1px;
+}
+
+#mocha-stats {
+  position: fixed;
+  top: 15px;
+  right: 10px;
+  font-size: 12px;
+  margin: 0;
+  color: #888;
+  z-index: 1;
+}
+
+#mocha-stats .progress {
+  float: right;
+  padding-top: 0;
+}
+
+#mocha-stats em {
+  color: black;
+}
+
+#mocha-stats a {
+  text-decoration: none;
+  color: inherit;
+}
+
+#mocha-stats a:hover {
+  border-bottom: 1px solid #eee;
+}
+
+#mocha-stats li {
+  display: inline-block;
+  margin: 0 5px;
+  list-style: none;
+  padding-top: 11px;
+}
+
+#mocha-stats canvas {
+  width: 40px;
+  height: 40px;
+}
+
+#mocha code .comment { color: #ddd; }
+#mocha code .init { color: #2f6fad; }
+#mocha code .string { color: #5890ad; }
+#mocha code .keyword { color: #8a6343; }
+#mocha code .number { color: #2f6fad; }
+
+@media screen and (max-device-width: 480px) {
+  #mocha {
+    margin: 60px 0px;
+  }
+
+  #mocha #stats {
+    position: absolute;
+  }
+}
+</style>
+<script src="../../polymer-test-tools/mocha/mocha.js"></script>
+<script src="../../polymer-test-tools/chai/chai.js"></script>
+
+</div>
+  <script src="../../polymer-test-tools/htmltest.js"></script>
+
+  <div hidden><!--
+Copyright (c) 2014 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+
+<!--
+@group Polymer Core Elements
+
+`<core-selector>` is used to manage a list of elements that can be selected.
+
+The attribute `selected` indicates which item element is being selected.
+The attribute `multi` indicates if multiple items can be selected at once.
+Tapping on the item element would fire `core-activate` event. Use
+`core-select` event to listen for selection changes.
+
+Example:
+
+    <core-selector selected="0">
+      <div>Item 1</div>
+      <div>Item 2</div>
+      <div>Item 3</div>
+    </core-selector>
+
+`<core-selector>` is not styled. Use the `core-selected` CSS class to style the selected element.
+
+    <style>
+      .item.core-selected {
+        background: #eee;
+      }
+    </style>
+    ...
+    <core-selector>
+      <div class="item">Item 1</div>
+      <div class="item">Item 2</div>
+      <div class="item">Item 3</div>
+    </core-selector>
+
+@element core-selector
+@status stable
+@homepage github.io
+-->
+
+<!--
+Fired when an item's selection state is changed. This event is fired both
+when an item is selected or deselected. The `isSelected` detail property
+contains the selection state.
+
+@event core-select
+@param {Object} detail
+  @param {boolean} detail.isSelected true for selection and false for deselection
+  @param {Object} detail.item the item element
+-->
+<!--
+Fired when an item element is tapped.
+
+@event core-activate
+@param {Object} detail
+  @param {Object} detail.item the item element
+-->
+
+<div hidden><!--
+Copyright (c) 2014 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+
+<!--
+Copyright (c) 2014 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+<style shim-shadowdom="">
+/*******************************
+          Flex Layout
+*******************************/
+
+html /deep/ [layout][horizontal], html /deep/ [layout][vertical] {
+  display: -ms-flexbox;
+  display: -webkit-flex;
+  display: flex;
+}
+
+html /deep/ [layout][horizontal][inline], html /deep/ [layout][vertical][inline] {
+  display: -ms-inline-flexbox;
+  display: -webkit-inline-flex;
+  display: inline-flex;
+}
+
+html /deep/ [layout][horizontal] {
+  -ms-flex-direction: row;
+  -webkit-flex-direction: row;
+  flex-direction: row;
+}
+
+html /deep/ [layout][horizontal][reverse] {
+  -ms-flex-direction: row-reverse;
+  -webkit-flex-direction: row-reverse;
+  flex-direction: row-reverse;
+}
+
+html /deep/ [layout][vertical] {
+  -ms-flex-direction: column;
+  -webkit-flex-direction: column;
+  flex-direction: column;
+}
+
+html /deep/ [layout][vertical][reverse] {
+  -ms-flex-direction: column-reverse;
+  -webkit-flex-direction: column-reverse;
+  flex-direction: column-reverse;
+}
+
+html /deep/ [layout][wrap] {
+  -ms-flex-wrap: wrap;
+  -webkit-flex-wrap: wrap;
+  flex-wrap: wrap;
+}
+
+html /deep/ [layout][wrap-reverse] {
+  -ms-flex-wrap: wrap-reverse;
+  -webkit-flex-wrap: wrap-reverse;
+  flex-wrap: wrap-reverse;
+}
+
+html /deep/ [flex] {
+  -ms-flex: 1;
+  -webkit-flex: 1;
+  flex: 1;
+}
+
+html /deep/ [flex][auto] {
+  -ms-flex: 1 1 auto;
+  -webkit-flex: 1 1 auto;
+  flex: 1 1 auto;
+}
+
+html /deep/ [flex][none] {
+  -ms-flex: none;
+  -webkit-flex: none;
+  flex: none;
+}
+
+html /deep/ [flex][one] {
+  -ms-flex: 1;
+  -webkit-flex: 1;
+  flex: 1;
+}
+
+html /deep/ [flex][two] {
+  -ms-flex: 2;
+  -webkit-flex: 2;
+  flex: 2;
+}
+
+html /deep/ [flex][three] {
+  -ms-flex: 3;
+  -webkit-flex: 3;
+  flex: 3;
+}
+
+html /deep/ [flex][four] {
+  -ms-flex: 4;
+  -webkit-flex: 4;
+  flex: 4;
+}
+
+html /deep/ [flex][five] {
+  -ms-flex: 5;
+  -webkit-flex: 5;
+  flex: 5;
+}
+
+html /deep/ [flex][six] {
+  -ms-flex: 6;
+  -webkit-flex: 6;
+  flex: 6;
+}
+
+html /deep/ [flex][seven] {
+  -ms-flex: 7;
+  -webkit-flex: 7;
+  flex: 7;
+}
+
+html /deep/ [flex][eight] {
+  -ms-flex: 8;
+  -webkit-flex: 8;
+  flex: 8;
+}
+
+html /deep/ [flex][nine] {
+  -ms-flex: 9;
+  -webkit-flex: 9;
+  flex: 9;
+}
+
+html /deep/ [flex][ten] {
+  -ms-flex: 10;
+  -webkit-flex: 10;
+  flex: 10;
+}
+
+html /deep/ [flex][eleven] {
+  -ms-flex: 11;
+  -webkit-flex: 11;
+  flex: 11;
+}
+
+html /deep/ [flex][twelve] {
+  -ms-flex: 12;
+  -webkit-flex: 12;
+  flex: 12;
+}
+
+/* alignment in cross axis */
+
+html /deep/ [layout][start] {
+  -ms-flex-align: start;
+  -webkit-align-items: flex-start;
+  align-items: flex-start;
+}
+
+html /deep/ [layout][center], html /deep/ [layout][center-center] {
+  -ms-flex-align: center;
+  -webkit-align-items: center;
+  align-items: center;
+}
+
+html /deep/ [layout][end] {
+  -ms-flex-align: end;
+  -webkit-align-items: flex-end;
+  align-items: flex-end;
+}
+
+/* alignment in main axis */
+
+html /deep/ [layout][start-justified] {
+  -ms-flex-pack: start;
+  -webkit-justify-content: flex-start;
+  justify-content: flex-start;
+}
+
+html /deep/ [layout][center-justified], html /deep/ [layout][center-center] {
+  -ms-flex-pack: center;
+  -webkit-justify-content: center;
+  justify-content: center;
+}
+
+html /deep/ [layout][end-justified] {
+  -ms-flex-pack: end;
+  -webkit-justify-content: flex-end;
+  justify-content: flex-end;
+}
+
+html /deep/ [layout][around-justified] {
+  -ms-flex-pack: around;
+  -webkit-justify-content: space-around;
+  justify-content: space-around;
+}
+
+html /deep/ [layout][justified] {
+  -ms-flex-pack: justify;
+  -webkit-justify-content: space-between;
+  justify-content: space-between;
+}
+
+/* self alignment */
+
+html /deep/ [self-start] {
+  -ms-align-self: flex-start;
+  -webkit-align-self: flex-start;
+  align-self: flex-start;
+}
+
+html /deep/ [self-center] {
+  -ms-align-self: center;
+  -webkit-align-self: center;
+  align-self: center;
+}
+
+html /deep/ [self-end] {
+  -ms-align-self: flex-end;
+  -webkit-align-self: flex-end;
+  align-self: flex-end;
+}
+
+html /deep/ [self-stretch] {
+  -ms-align-self: stretch;
+  -webkit-align-self: stretch;
+  align-self: stretch;
+}
+
+/*******************************
+          Other Layout
+*******************************/
+
+html /deep/ [block] {
+  display: block;
+}
+
+/* ie support for hidden */
+html /deep/ [hidden] {
+  display: none !important;
+}
+
+html /deep/ [relative] {
+  position: relative;
+}
+
+html /deep/ [fit] {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+}
+
+body[fullbleed] {
+  margin: 0;
+  height: 100vh;
+}
+
+/*******************************
+            Other
+*******************************/
+
+html /deep/ [segment], html /deep/ segment {
+  display: block;
+  position: relative;
+  -webkit-box-sizing: border-box;
+  -ms-box-sizing: border-box;
+  box-sizing: border-box;
+  margin: 1em 0.5em;
+  padding: 1em;
+  background-color: white;
+  -webkit-box-shadow: 0px 0px 0px 1px rgba(0, 0, 0, 0.1);
+  box-shadow: 0px 0px 0px 1px rgba(0, 0, 0, 0.1);
+  border-radius: 5px 5px 5px 5px;
+}
+
+</style>
+
+<script src="../../polymer/polymer.js"></script>
+<!--<link rel="import" href="../polymer-dev/polymer.html">--> </div>
+<div hidden><!--
+Copyright (c) 2014 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+<!--
+@group Polymer Core Elements
+
+The `<core-selection>` element is used to manage selection state. It has no
+visual appearance and is typically used in conjunction with another element.
+For example, [core-selector](#core-selector)
+use a `<core-selection>` to manage selection.
+
+To mark an item as selected, call the `select(item)` method on 
+`<core-selection>`. The item itself is an argument to this method.
+
+The `<core-selection>`element manages selection state for any given set of
+items. When an item is selected, the `core-select` event is fired.
+
+The attribute `multi` indicates if multiple items can be selected at once.
+  
+Example:
+ 
+    <polymer-element name="selection-example">
+       <template>
+         <style>
+           polyfill-next-selector { content: ':host > .selected'; }
+           ::content > .selected {
+             font-weight: bold;
+             font-style: italic;
+           }
+         </style>
+         <ul on-tap="{{itemTapAction}}">
+           <content></content>
+         </ul>
+         <core-selection id="selection" multi
+                         on-core-select="{{selectAction}}"></core-selection>
+       </template>
+       <script>
+         Polymer('selection-example', {
+           itemTapAction: function(e, detail, sender) {
+             this.$.selection.select(e.target);
+           },
+           selectAction: function(e, detail, sender) {
+             detail.item.classList.toggle('selected', detail.isSelected);
+           }
+         });
+       </script>
+    </polymer-element>
+
+    <selection-example>
+      <li>Red</li>
+      <li>Green</li>
+      <li>Blue</li>
+    </selection-example>
+ 
+@element core-selection
+-->
+
+<!--
+Fired when an item's selection state is changed. This event is fired both
+when an item is selected or deselected. The `isSelected` detail property
+contains the selection state.
+
+@event core-select
+@param {Object} detail
+  @param {boolean} detail.isSelected true for selection and false for de-selection
+  @param {Object} detail.item the item element
+-->
+<div hidden><!--
+Copyright (c) 2014 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+
+<!--
+Copyright (c) 2014 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+<style shim-shadowdom="">
+/*******************************
+          Flex Layout
+*******************************/
+
+html /deep/ [layout][horizontal], html /deep/ [layout][vertical] {
+  display: -ms-flexbox;
+  display: -webkit-flex;
+  display: flex;
+}
+
+html /deep/ [layout][horizontal][inline], html /deep/ [layout][vertical][inline] {
+  display: -ms-inline-flexbox;
+  display: -webkit-inline-flex;
+  display: inline-flex;
+}
+
+html /deep/ [layout][horizontal] {
+  -ms-flex-direction: row;
+  -webkit-flex-direction: row;
+  flex-direction: row;
+}
+
+html /deep/ [layout][horizontal][reverse] {
+  -ms-flex-direction: row-reverse;
+  -webkit-flex-direction: row-reverse;
+  flex-direction: row-reverse;
+}
+
+html /deep/ [layout][vertical] {
+  -ms-flex-direction: column;
+  -webkit-flex-direction: column;
+  flex-direction: column;
+}
+
+html /deep/ [layout][vertical][reverse] {
+  -ms-flex-direction: column-reverse;
+  -webkit-flex-direction: column-reverse;
+  flex-direction: column-reverse;
+}
+
+html /deep/ [layout][wrap] {
+  -ms-flex-wrap: wrap;
+  -webkit-flex-wrap: wrap;
+  flex-wrap: wrap;
+}
+
+html /deep/ [layout][wrap-reverse] {
+  -ms-flex-wrap: wrap-reverse;
+  -webkit-flex-wrap: wrap-reverse;
+  flex-wrap: wrap-reverse;
+}
+
+html /deep/ [flex] {
+  -ms-flex: 1;
+  -webkit-flex: 1;
+  flex: 1;
+}
+
+html /deep/ [flex][auto] {
+  -ms-flex: 1 1 auto;
+  -webkit-flex: 1 1 auto;
+  flex: 1 1 auto;
+}
+
+html /deep/ [flex][none] {
+  -ms-flex: none;
+  -webkit-flex: none;
+  flex: none;
+}
+
+html /deep/ [flex][one] {
+  -ms-flex: 1;
+  -webkit-flex: 1;
+  flex: 1;
+}
+
+html /deep/ [flex][two] {
+  -ms-flex: 2;
+  -webkit-flex: 2;
+  flex: 2;
+}
+
+html /deep/ [flex][three] {
+  -ms-flex: 3;
+  -webkit-flex: 3;
+  flex: 3;
+}
+
+html /deep/ [flex][four] {
+  -ms-flex: 4;
+  -webkit-flex: 4;
+  flex: 4;
+}
+
+html /deep/ [flex][five] {
+  -ms-flex: 5;
+  -webkit-flex: 5;
+  flex: 5;
+}
+
+html /deep/ [flex][six] {
+  -ms-flex: 6;
+  -webkit-flex: 6;
+  flex: 6;
+}
+
+html /deep/ [flex][seven] {
+  -ms-flex: 7;
+  -webkit-flex: 7;
+  flex: 7;
+}
+
+html /deep/ [flex][eight] {
+  -ms-flex: 8;
+  -webkit-flex: 8;
+  flex: 8;
+}
+
+html /deep/ [flex][nine] {
+  -ms-flex: 9;
+  -webkit-flex: 9;
+  flex: 9;
+}
+
+html /deep/ [flex][ten] {
+  -ms-flex: 10;
+  -webkit-flex: 10;
+  flex: 10;
+}
+
+html /deep/ [flex][eleven] {
+  -ms-flex: 11;
+  -webkit-flex: 11;
+  flex: 11;
+}
+
+html /deep/ [flex][twelve] {
+  -ms-flex: 12;
+  -webkit-flex: 12;
+  flex: 12;
+}
+
+/* alignment in cross axis */
+
+html /deep/ [layout][start] {
+  -ms-flex-align: start;
+  -webkit-align-items: flex-start;
+  align-items: flex-start;
+}
+
+html /deep/ [layout][center], html /deep/ [layout][center-center] {
+  -ms-flex-align: center;
+  -webkit-align-items: center;
+  align-items: center;
+}
+
+html /deep/ [layout][end] {
+  -ms-flex-align: end;
+  -webkit-align-items: flex-end;
+  align-items: flex-end;
+}
+
+/* alignment in main axis */
+
+html /deep/ [layout][start-justified] {
+  -ms-flex-pack: start;
+  -webkit-justify-content: flex-start;
+  justify-content: flex-start;
+}
+
+html /deep/ [layout][center-justified], html /deep/ [layout][center-center] {
+  -ms-flex-pack: center;
+  -webkit-justify-content: center;
+  justify-content: center;
+}
+
+html /deep/ [layout][end-justified] {
+  -ms-flex-pack: end;
+  -webkit-justify-content: flex-end;
+  justify-content: flex-end;
+}
+
+html /deep/ [layout][around-justified] {
+  -ms-flex-pack: around;
+  -webkit-justify-content: space-around;
+  justify-content: space-around;
+}
+
+html /deep/ [layout][justified] {
+  -ms-flex-pack: justify;
+  -webkit-justify-content: space-between;
+  justify-content: space-between;
+}
+
+/* self alignment */
+
+html /deep/ [self-start] {
+  -ms-align-self: flex-start;
+  -webkit-align-self: flex-start;
+  align-self: flex-start;
+}
+
+html /deep/ [self-center] {
+  -ms-align-self: center;
+  -webkit-align-self: center;
+  align-self: center;
+}
+
+html /deep/ [self-end] {
+  -ms-align-self: flex-end;
+  -webkit-align-self: flex-end;
+  align-self: flex-end;
+}
+
+html /deep/ [self-stretch] {
+  -ms-align-self: stretch;
+  -webkit-align-self: stretch;
+  align-self: stretch;
+}
+
+/*******************************
+          Other Layout
+*******************************/
+
+html /deep/ [block] {
+  display: block;
+}
+
+/* ie support for hidden */
+html /deep/ [hidden] {
+  display: none !important;
+}
+
+html /deep/ [relative] {
+  position: relative;
+}
+
+html /deep/ [fit] {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+}
+
+body[fullbleed] {
+  margin: 0;
+  height: 100vh;
+}
+
+/*******************************
+            Other
+*******************************/
+
+html /deep/ [segment], html /deep/ segment {
+  display: block;
+  position: relative;
+  -webkit-box-sizing: border-box;
+  -ms-box-sizing: border-box;
+  box-sizing: border-box;
+  margin: 1em 0.5em;
+  padding: 1em;
+  background-color: white;
+  -webkit-box-shadow: 0px 0px 0px 1px rgba(0, 0, 0, 0.1);
+  box-shadow: 0px 0px 0px 1px rgba(0, 0, 0, 0.1);
+  border-radius: 5px 5px 5px 5px;
+}
+
+</style>
+
+<script src="../../polymer/polymer.js"></script>
+<!--<link rel="import" href="../polymer-dev/polymer.html">--> </div>
+
+<polymer-element name="core-selection" attributes="multi" hidden assetpath="">
+  
+</polymer-element>
+<script src="../../core-selection/core-selection.js"></script></div>
+
+<polymer-element name="core-selector" attributes="selected multi valueattr selectedClass selectedProperty selectedAttribute selectedItem selectedModel selectedIndex notap target itemsSelector activateEvent" assetpath="">
+
+  <template>
+    <core-selection id="selection" multi="{{multi}}" on-core-select="{{selectionSelect}}"></core-selection>
+    <content id="items" select="*"></content>
+  </template>
+
+  
+</polymer-element>
+<script src="../../core-selector/core-selector.js"></script></div>
+  <style>
+    .core-selected {
+      background: #ccc;
+    }
+    
+    .my-selected {
+      background: red;
+    }
+  </style>
+</head>
+<body>
+
+  <core-selector id="selector1">
+    <div>Item 1</div>
+    <div>Item 2</div>
+    <div>Item 3</div>
+    <div>Item 4</div>
+    <div>Item 5</div>
+  </core-selector>
+  
+  <br><br>
+  
+  <core-selector id="selector2" selected="item3" selectedclass="my-selected" valueattr="id">
+    <div id="item1">Item 1</div>
+    <div id="item2">Item 2</div>
+    <div id="item3">Item 3</div>
+    <div id="item4">Item 4</div>
+    <div id="item5">Item 5</div>
+  </core-selector>
+  
+  
+<script src="core-selector-basic.js"></script></body>
+</html>

@@ -1,0 +1,1449 @@
+<!--
+Copyright (c) 2014 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+
+<div hidden><!--
+Copyright (c) 2014 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+
+<!--
+Copyright (c) 2014 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+<style shim-shadowdom="">
+/*******************************
+          Flex Layout
+*******************************/
+
+html /deep/ [layout][horizontal], html /deep/ [layout][vertical] {
+  display: -ms-flexbox;
+  display: -webkit-flex;
+  display: flex;
+}
+
+html /deep/ [layout][horizontal][inline], html /deep/ [layout][vertical][inline] {
+  display: -ms-inline-flexbox;
+  display: -webkit-inline-flex;
+  display: inline-flex;
+}
+
+html /deep/ [layout][horizontal] {
+  -ms-flex-direction: row;
+  -webkit-flex-direction: row;
+  flex-direction: row;
+}
+
+html /deep/ [layout][horizontal][reverse] {
+  -ms-flex-direction: row-reverse;
+  -webkit-flex-direction: row-reverse;
+  flex-direction: row-reverse;
+}
+
+html /deep/ [layout][vertical] {
+  -ms-flex-direction: column;
+  -webkit-flex-direction: column;
+  flex-direction: column;
+}
+
+html /deep/ [layout][vertical][reverse] {
+  -ms-flex-direction: column-reverse;
+  -webkit-flex-direction: column-reverse;
+  flex-direction: column-reverse;
+}
+
+html /deep/ [layout][wrap] {
+  -ms-flex-wrap: wrap;
+  -webkit-flex-wrap: wrap;
+  flex-wrap: wrap;
+}
+
+html /deep/ [layout][wrap-reverse] {
+  -ms-flex-wrap: wrap-reverse;
+  -webkit-flex-wrap: wrap-reverse;
+  flex-wrap: wrap-reverse;
+}
+
+html /deep/ [flex] {
+  -ms-flex: 1;
+  -webkit-flex: 1;
+  flex: 1;
+}
+
+html /deep/ [flex][auto] {
+  -ms-flex: 1 1 auto;
+  -webkit-flex: 1 1 auto;
+  flex: 1 1 auto;
+}
+
+html /deep/ [flex][none] {
+  -ms-flex: none;
+  -webkit-flex: none;
+  flex: none;
+}
+
+html /deep/ [flex][one] {
+  -ms-flex: 1;
+  -webkit-flex: 1;
+  flex: 1;
+}
+
+html /deep/ [flex][two] {
+  -ms-flex: 2;
+  -webkit-flex: 2;
+  flex: 2;
+}
+
+html /deep/ [flex][three] {
+  -ms-flex: 3;
+  -webkit-flex: 3;
+  flex: 3;
+}
+
+html /deep/ [flex][four] {
+  -ms-flex: 4;
+  -webkit-flex: 4;
+  flex: 4;
+}
+
+html /deep/ [flex][five] {
+  -ms-flex: 5;
+  -webkit-flex: 5;
+  flex: 5;
+}
+
+html /deep/ [flex][six] {
+  -ms-flex: 6;
+  -webkit-flex: 6;
+  flex: 6;
+}
+
+html /deep/ [flex][seven] {
+  -ms-flex: 7;
+  -webkit-flex: 7;
+  flex: 7;
+}
+
+html /deep/ [flex][eight] {
+  -ms-flex: 8;
+  -webkit-flex: 8;
+  flex: 8;
+}
+
+html /deep/ [flex][nine] {
+  -ms-flex: 9;
+  -webkit-flex: 9;
+  flex: 9;
+}
+
+html /deep/ [flex][ten] {
+  -ms-flex: 10;
+  -webkit-flex: 10;
+  flex: 10;
+}
+
+html /deep/ [flex][eleven] {
+  -ms-flex: 11;
+  -webkit-flex: 11;
+  flex: 11;
+}
+
+html /deep/ [flex][twelve] {
+  -ms-flex: 12;
+  -webkit-flex: 12;
+  flex: 12;
+}
+
+/* alignment in cross axis */
+
+html /deep/ [layout][start] {
+  -ms-flex-align: start;
+  -webkit-align-items: flex-start;
+  align-items: flex-start;
+}
+
+html /deep/ [layout][center], html /deep/ [layout][center-center] {
+  -ms-flex-align: center;
+  -webkit-align-items: center;
+  align-items: center;
+}
+
+html /deep/ [layout][end] {
+  -ms-flex-align: end;
+  -webkit-align-items: flex-end;
+  align-items: flex-end;
+}
+
+/* alignment in main axis */
+
+html /deep/ [layout][start-justified] {
+  -ms-flex-pack: start;
+  -webkit-justify-content: flex-start;
+  justify-content: flex-start;
+}
+
+html /deep/ [layout][center-justified], html /deep/ [layout][center-center] {
+  -ms-flex-pack: center;
+  -webkit-justify-content: center;
+  justify-content: center;
+}
+
+html /deep/ [layout][end-justified] {
+  -ms-flex-pack: end;
+  -webkit-justify-content: flex-end;
+  justify-content: flex-end;
+}
+
+html /deep/ [layout][around-justified] {
+  -ms-flex-pack: around;
+  -webkit-justify-content: space-around;
+  justify-content: space-around;
+}
+
+html /deep/ [layout][justified] {
+  -ms-flex-pack: justify;
+  -webkit-justify-content: space-between;
+  justify-content: space-between;
+}
+
+/* self alignment */
+
+html /deep/ [self-start] {
+  -ms-align-self: flex-start;
+  -webkit-align-self: flex-start;
+  align-self: flex-start;
+}
+
+html /deep/ [self-center] {
+  -ms-align-self: center;
+  -webkit-align-self: center;
+  align-self: center;
+}
+
+html /deep/ [self-end] {
+  -ms-align-self: flex-end;
+  -webkit-align-self: flex-end;
+  align-self: flex-end;
+}
+
+html /deep/ [self-stretch] {
+  -ms-align-self: stretch;
+  -webkit-align-self: stretch;
+  align-self: stretch;
+}
+
+/*******************************
+          Other Layout
+*******************************/
+
+html /deep/ [block] {
+  display: block;
+}
+
+/* ie support for hidden */
+html /deep/ [hidden] {
+  display: none !important;
+}
+
+html /deep/ [relative] {
+  position: relative;
+}
+
+html /deep/ [fit] {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+}
+
+body[fullbleed] {
+  margin: 0;
+  height: 100vh;
+}
+
+/*******************************
+            Other
+*******************************/
+
+html /deep/ [segment], html /deep/ segment {
+  display: block;
+  position: relative;
+  -webkit-box-sizing: border-box;
+  -ms-box-sizing: border-box;
+  box-sizing: border-box;
+  margin: 1em 0.5em;
+  padding: 1em;
+  background-color: white;
+  -webkit-box-shadow: 0px 0px 0px 1px rgba(0, 0, 0, 0.1);
+  box-shadow: 0px 0px 0px 1px rgba(0, 0, 0, 0.1);
+  border-radius: 5px 5px 5px 5px;
+}
+
+</style>
+
+<script src="../polymer/polymer.js"></script>
+<!--<link rel="import" href="../polymer-dev/polymer.html">--> </div>
+<div hidden><!--
+Copyright (c) 2014 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+
+<div hidden><!--
+Copyright (c) 2014 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+
+<!--
+Copyright (c) 2014 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+<style shim-shadowdom="">
+/*******************************
+          Flex Layout
+*******************************/
+
+html /deep/ [layout][horizontal], html /deep/ [layout][vertical] {
+  display: -ms-flexbox;
+  display: -webkit-flex;
+  display: flex;
+}
+
+html /deep/ [layout][horizontal][inline], html /deep/ [layout][vertical][inline] {
+  display: -ms-inline-flexbox;
+  display: -webkit-inline-flex;
+  display: inline-flex;
+}
+
+html /deep/ [layout][horizontal] {
+  -ms-flex-direction: row;
+  -webkit-flex-direction: row;
+  flex-direction: row;
+}
+
+html /deep/ [layout][horizontal][reverse] {
+  -ms-flex-direction: row-reverse;
+  -webkit-flex-direction: row-reverse;
+  flex-direction: row-reverse;
+}
+
+html /deep/ [layout][vertical] {
+  -ms-flex-direction: column;
+  -webkit-flex-direction: column;
+  flex-direction: column;
+}
+
+html /deep/ [layout][vertical][reverse] {
+  -ms-flex-direction: column-reverse;
+  -webkit-flex-direction: column-reverse;
+  flex-direction: column-reverse;
+}
+
+html /deep/ [layout][wrap] {
+  -ms-flex-wrap: wrap;
+  -webkit-flex-wrap: wrap;
+  flex-wrap: wrap;
+}
+
+html /deep/ [layout][wrap-reverse] {
+  -ms-flex-wrap: wrap-reverse;
+  -webkit-flex-wrap: wrap-reverse;
+  flex-wrap: wrap-reverse;
+}
+
+html /deep/ [flex] {
+  -ms-flex: 1;
+  -webkit-flex: 1;
+  flex: 1;
+}
+
+html /deep/ [flex][auto] {
+  -ms-flex: 1 1 auto;
+  -webkit-flex: 1 1 auto;
+  flex: 1 1 auto;
+}
+
+html /deep/ [flex][none] {
+  -ms-flex: none;
+  -webkit-flex: none;
+  flex: none;
+}
+
+html /deep/ [flex][one] {
+  -ms-flex: 1;
+  -webkit-flex: 1;
+  flex: 1;
+}
+
+html /deep/ [flex][two] {
+  -ms-flex: 2;
+  -webkit-flex: 2;
+  flex: 2;
+}
+
+html /deep/ [flex][three] {
+  -ms-flex: 3;
+  -webkit-flex: 3;
+  flex: 3;
+}
+
+html /deep/ [flex][four] {
+  -ms-flex: 4;
+  -webkit-flex: 4;
+  flex: 4;
+}
+
+html /deep/ [flex][five] {
+  -ms-flex: 5;
+  -webkit-flex: 5;
+  flex: 5;
+}
+
+html /deep/ [flex][six] {
+  -ms-flex: 6;
+  -webkit-flex: 6;
+  flex: 6;
+}
+
+html /deep/ [flex][seven] {
+  -ms-flex: 7;
+  -webkit-flex: 7;
+  flex: 7;
+}
+
+html /deep/ [flex][eight] {
+  -ms-flex: 8;
+  -webkit-flex: 8;
+  flex: 8;
+}
+
+html /deep/ [flex][nine] {
+  -ms-flex: 9;
+  -webkit-flex: 9;
+  flex: 9;
+}
+
+html /deep/ [flex][ten] {
+  -ms-flex: 10;
+  -webkit-flex: 10;
+  flex: 10;
+}
+
+html /deep/ [flex][eleven] {
+  -ms-flex: 11;
+  -webkit-flex: 11;
+  flex: 11;
+}
+
+html /deep/ [flex][twelve] {
+  -ms-flex: 12;
+  -webkit-flex: 12;
+  flex: 12;
+}
+
+/* alignment in cross axis */
+
+html /deep/ [layout][start] {
+  -ms-flex-align: start;
+  -webkit-align-items: flex-start;
+  align-items: flex-start;
+}
+
+html /deep/ [layout][center], html /deep/ [layout][center-center] {
+  -ms-flex-align: center;
+  -webkit-align-items: center;
+  align-items: center;
+}
+
+html /deep/ [layout][end] {
+  -ms-flex-align: end;
+  -webkit-align-items: flex-end;
+  align-items: flex-end;
+}
+
+/* alignment in main axis */
+
+html /deep/ [layout][start-justified] {
+  -ms-flex-pack: start;
+  -webkit-justify-content: flex-start;
+  justify-content: flex-start;
+}
+
+html /deep/ [layout][center-justified], html /deep/ [layout][center-center] {
+  -ms-flex-pack: center;
+  -webkit-justify-content: center;
+  justify-content: center;
+}
+
+html /deep/ [layout][end-justified] {
+  -ms-flex-pack: end;
+  -webkit-justify-content: flex-end;
+  justify-content: flex-end;
+}
+
+html /deep/ [layout][around-justified] {
+  -ms-flex-pack: around;
+  -webkit-justify-content: space-around;
+  justify-content: space-around;
+}
+
+html /deep/ [layout][justified] {
+  -ms-flex-pack: justify;
+  -webkit-justify-content: space-between;
+  justify-content: space-between;
+}
+
+/* self alignment */
+
+html /deep/ [self-start] {
+  -ms-align-self: flex-start;
+  -webkit-align-self: flex-start;
+  align-self: flex-start;
+}
+
+html /deep/ [self-center] {
+  -ms-align-self: center;
+  -webkit-align-self: center;
+  align-self: center;
+}
+
+html /deep/ [self-end] {
+  -ms-align-self: flex-end;
+  -webkit-align-self: flex-end;
+  align-self: flex-end;
+}
+
+html /deep/ [self-stretch] {
+  -ms-align-self: stretch;
+  -webkit-align-self: stretch;
+  align-self: stretch;
+}
+
+/*******************************
+          Other Layout
+*******************************/
+
+html /deep/ [block] {
+  display: block;
+}
+
+/* ie support for hidden */
+html /deep/ [hidden] {
+  display: none !important;
+}
+
+html /deep/ [relative] {
+  position: relative;
+}
+
+html /deep/ [fit] {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+}
+
+body[fullbleed] {
+  margin: 0;
+  height: 100vh;
+}
+
+/*******************************
+            Other
+*******************************/
+
+html /deep/ [segment], html /deep/ segment {
+  display: block;
+  position: relative;
+  -webkit-box-sizing: border-box;
+  -ms-box-sizing: border-box;
+  box-sizing: border-box;
+  margin: 1em 0.5em;
+  padding: 1em;
+  background-color: white;
+  -webkit-box-shadow: 0px 0px 0px 1px rgba(0, 0, 0, 0.1);
+  box-shadow: 0px 0px 0px 1px rgba(0, 0, 0, 0.1);
+  border-radius: 5px 5px 5px 5px;
+}
+
+</style>
+
+<script src="../polymer/polymer.js"></script>
+<!--<link rel="import" href="../polymer-dev/polymer.html">--> </div>
+<div hidden><!--
+Copyright (c) 2014 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+
+<!--
+
+`<core-transition>` is an abstraction of an animation. It is used to implement pluggable
+transitions, for example in `<core-overlay>`. You can extend this class to create a custom
+animation, instantiate it, and import it where you need the animation.
+
+All instances of `<core-transition>` are stored in a single database with `type=transition`.
+For more about the database, please see the documentation for `<core-meta>`.
+
+Each instance of `<core-transition>` objects are shared across all the clients, so you should
+not store state information specific to the animated element in the transition. Rather, store
+it on the element.
+
+Example:
+
+my-transition.html:
+
+    <polymer-element name="my-transition" extends="core-transition">
+        <script>
+            go: function(node) {
+                node.style.transition = 'opacity 1s ease-out';
+                node.style.opacity = 0;
+            }
+        </script>
+    </polymer-element>
+
+    <my-transition id="my-fade-out"></my-transition>
+
+my-transition-demo.html:
+
+    <link href="components/core-meta/core-meta.html" rel="import">
+    <link href="my-transition.html" rel="import">
+
+    <div id="animate-me"></div>
+
+    <script>
+        // Get the core-transition
+        var meta = document.createElement('core-meta');
+        meta.type = 'transition';
+        var transition = meta.byId('my-fade-out');
+
+        // Run the animation
+        var animated = document.getElementById('animate-me');
+        transition.go(animated);
+    </script>
+
+@group Polymer Core Elements
+@element core-transition
+@extends core-meta
+@status beta
+@homepage github.io
+-->
+<!--
+Fired when the animation finishes.
+
+@event core-transitionend
+@param {Object} detail
+@param {Object} detail.node The animated node
+-->
+
+<!--
+Copyright (c) 2014 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+
+<!--
+`core-meta` provides a method of constructing a self-organizing database.
+It is useful to collate element meta-data for things like catalogs and for 
+designer.
+
+Example, an element folder has a `metadata.html` file in it, that contains a 
+`core-meta`, something like this:
+
+    <core-meta id="my-element" label="My Element">
+      <property name="color" value="blue"></property>
+    </core-meta>
+
+An application can import as many of these files as it wants, and then use 
+`core-meta` again to access the collected data.
+
+    <script>
+      var meta = document.createElement('core-meta');
+      console.log(meta.list); // dump a list of all meta-data elements that have been created
+    </script>
+
+Use `byId(id)` to retrive a specific core-meta.
+
+    <script>
+      var meta = document.createElement('core-meta');
+      console.log(meta.byId('my-element'));
+    </script>
+
+By default all meta-data are stored in a single databse.  If your meta-data 
+have different types and want them to be stored separately, use `type` to 
+differentiate them.
+
+Example:
+
+    <core-meta id="x-foo" type="xElt"></core-meta>
+    <core-meta id="x-bar" type="xElt"></core-meta>
+    <core-meta id="y-bar" type="yElt"></core-meta>
+
+    <script>
+      var meta = document.createElement('core-meta');
+      meta.type = 'xElt';
+      console.log(meta.list);
+    </script>
+
+@group Polymer Core Elements
+@element core-meta
+@homepage github.io
+-->
+
+<div hidden><!--
+Copyright (c) 2014 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+
+<!--
+Copyright (c) 2014 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+<style shim-shadowdom="">
+/*******************************
+          Flex Layout
+*******************************/
+
+html /deep/ [layout][horizontal], html /deep/ [layout][vertical] {
+  display: -ms-flexbox;
+  display: -webkit-flex;
+  display: flex;
+}
+
+html /deep/ [layout][horizontal][inline], html /deep/ [layout][vertical][inline] {
+  display: -ms-inline-flexbox;
+  display: -webkit-inline-flex;
+  display: inline-flex;
+}
+
+html /deep/ [layout][horizontal] {
+  -ms-flex-direction: row;
+  -webkit-flex-direction: row;
+  flex-direction: row;
+}
+
+html /deep/ [layout][horizontal][reverse] {
+  -ms-flex-direction: row-reverse;
+  -webkit-flex-direction: row-reverse;
+  flex-direction: row-reverse;
+}
+
+html /deep/ [layout][vertical] {
+  -ms-flex-direction: column;
+  -webkit-flex-direction: column;
+  flex-direction: column;
+}
+
+html /deep/ [layout][vertical][reverse] {
+  -ms-flex-direction: column-reverse;
+  -webkit-flex-direction: column-reverse;
+  flex-direction: column-reverse;
+}
+
+html /deep/ [layout][wrap] {
+  -ms-flex-wrap: wrap;
+  -webkit-flex-wrap: wrap;
+  flex-wrap: wrap;
+}
+
+html /deep/ [layout][wrap-reverse] {
+  -ms-flex-wrap: wrap-reverse;
+  -webkit-flex-wrap: wrap-reverse;
+  flex-wrap: wrap-reverse;
+}
+
+html /deep/ [flex] {
+  -ms-flex: 1;
+  -webkit-flex: 1;
+  flex: 1;
+}
+
+html /deep/ [flex][auto] {
+  -ms-flex: 1 1 auto;
+  -webkit-flex: 1 1 auto;
+  flex: 1 1 auto;
+}
+
+html /deep/ [flex][none] {
+  -ms-flex: none;
+  -webkit-flex: none;
+  flex: none;
+}
+
+html /deep/ [flex][one] {
+  -ms-flex: 1;
+  -webkit-flex: 1;
+  flex: 1;
+}
+
+html /deep/ [flex][two] {
+  -ms-flex: 2;
+  -webkit-flex: 2;
+  flex: 2;
+}
+
+html /deep/ [flex][three] {
+  -ms-flex: 3;
+  -webkit-flex: 3;
+  flex: 3;
+}
+
+html /deep/ [flex][four] {
+  -ms-flex: 4;
+  -webkit-flex: 4;
+  flex: 4;
+}
+
+html /deep/ [flex][five] {
+  -ms-flex: 5;
+  -webkit-flex: 5;
+  flex: 5;
+}
+
+html /deep/ [flex][six] {
+  -ms-flex: 6;
+  -webkit-flex: 6;
+  flex: 6;
+}
+
+html /deep/ [flex][seven] {
+  -ms-flex: 7;
+  -webkit-flex: 7;
+  flex: 7;
+}
+
+html /deep/ [flex][eight] {
+  -ms-flex: 8;
+  -webkit-flex: 8;
+  flex: 8;
+}
+
+html /deep/ [flex][nine] {
+  -ms-flex: 9;
+  -webkit-flex: 9;
+  flex: 9;
+}
+
+html /deep/ [flex][ten] {
+  -ms-flex: 10;
+  -webkit-flex: 10;
+  flex: 10;
+}
+
+html /deep/ [flex][eleven] {
+  -ms-flex: 11;
+  -webkit-flex: 11;
+  flex: 11;
+}
+
+html /deep/ [flex][twelve] {
+  -ms-flex: 12;
+  -webkit-flex: 12;
+  flex: 12;
+}
+
+/* alignment in cross axis */
+
+html /deep/ [layout][start] {
+  -ms-flex-align: start;
+  -webkit-align-items: flex-start;
+  align-items: flex-start;
+}
+
+html /deep/ [layout][center], html /deep/ [layout][center-center] {
+  -ms-flex-align: center;
+  -webkit-align-items: center;
+  align-items: center;
+}
+
+html /deep/ [layout][end] {
+  -ms-flex-align: end;
+  -webkit-align-items: flex-end;
+  align-items: flex-end;
+}
+
+/* alignment in main axis */
+
+html /deep/ [layout][start-justified] {
+  -ms-flex-pack: start;
+  -webkit-justify-content: flex-start;
+  justify-content: flex-start;
+}
+
+html /deep/ [layout][center-justified], html /deep/ [layout][center-center] {
+  -ms-flex-pack: center;
+  -webkit-justify-content: center;
+  justify-content: center;
+}
+
+html /deep/ [layout][end-justified] {
+  -ms-flex-pack: end;
+  -webkit-justify-content: flex-end;
+  justify-content: flex-end;
+}
+
+html /deep/ [layout][around-justified] {
+  -ms-flex-pack: around;
+  -webkit-justify-content: space-around;
+  justify-content: space-around;
+}
+
+html /deep/ [layout][justified] {
+  -ms-flex-pack: justify;
+  -webkit-justify-content: space-between;
+  justify-content: space-between;
+}
+
+/* self alignment */
+
+html /deep/ [self-start] {
+  -ms-align-self: flex-start;
+  -webkit-align-self: flex-start;
+  align-self: flex-start;
+}
+
+html /deep/ [self-center] {
+  -ms-align-self: center;
+  -webkit-align-self: center;
+  align-self: center;
+}
+
+html /deep/ [self-end] {
+  -ms-align-self: flex-end;
+  -webkit-align-self: flex-end;
+  align-self: flex-end;
+}
+
+html /deep/ [self-stretch] {
+  -ms-align-self: stretch;
+  -webkit-align-self: stretch;
+  align-self: stretch;
+}
+
+/*******************************
+          Other Layout
+*******************************/
+
+html /deep/ [block] {
+  display: block;
+}
+
+/* ie support for hidden */
+html /deep/ [hidden] {
+  display: none !important;
+}
+
+html /deep/ [relative] {
+  position: relative;
+}
+
+html /deep/ [fit] {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+}
+
+body[fullbleed] {
+  margin: 0;
+  height: 100vh;
+}
+
+/*******************************
+            Other
+*******************************/
+
+html /deep/ [segment], html /deep/ segment {
+  display: block;
+  position: relative;
+  -webkit-box-sizing: border-box;
+  -ms-box-sizing: border-box;
+  box-sizing: border-box;
+  margin: 1em 0.5em;
+  padding: 1em;
+  background-color: white;
+  -webkit-box-shadow: 0px 0px 0px 1px rgba(0, 0, 0, 0.1);
+  box-shadow: 0px 0px 0px 1px rgba(0, 0, 0, 0.1);
+  border-radius: 5px 5px 5px 5px;
+}
+
+</style>
+
+<script src="../polymer/polymer.js"></script>
+<!--<link rel="import" href="../polymer-dev/polymer.html">--> </div>
+
+<polymer-element name="core-meta" attributes="label type" hidden assetpath="">
+
+</polymer-element>
+<script src="../core-meta/core-meta.js"></script>
+
+<polymer-element name="core-transition" extends="core-meta" assetpath="../core-transition/">
+  
+  
+</polymer-element></div>
+<div hidden><!--
+Copyright (c) 2014 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+
+<div hidden><!--
+Copyright (c) 2014 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+
+<!--
+Copyright (c) 2014 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+<style shim-shadowdom="">
+/*******************************
+          Flex Layout
+*******************************/
+
+html /deep/ [layout][horizontal], html /deep/ [layout][vertical] {
+  display: -ms-flexbox;
+  display: -webkit-flex;
+  display: flex;
+}
+
+html /deep/ [layout][horizontal][inline], html /deep/ [layout][vertical][inline] {
+  display: -ms-inline-flexbox;
+  display: -webkit-inline-flex;
+  display: inline-flex;
+}
+
+html /deep/ [layout][horizontal] {
+  -ms-flex-direction: row;
+  -webkit-flex-direction: row;
+  flex-direction: row;
+}
+
+html /deep/ [layout][horizontal][reverse] {
+  -ms-flex-direction: row-reverse;
+  -webkit-flex-direction: row-reverse;
+  flex-direction: row-reverse;
+}
+
+html /deep/ [layout][vertical] {
+  -ms-flex-direction: column;
+  -webkit-flex-direction: column;
+  flex-direction: column;
+}
+
+html /deep/ [layout][vertical][reverse] {
+  -ms-flex-direction: column-reverse;
+  -webkit-flex-direction: column-reverse;
+  flex-direction: column-reverse;
+}
+
+html /deep/ [layout][wrap] {
+  -ms-flex-wrap: wrap;
+  -webkit-flex-wrap: wrap;
+  flex-wrap: wrap;
+}
+
+html /deep/ [layout][wrap-reverse] {
+  -ms-flex-wrap: wrap-reverse;
+  -webkit-flex-wrap: wrap-reverse;
+  flex-wrap: wrap-reverse;
+}
+
+html /deep/ [flex] {
+  -ms-flex: 1;
+  -webkit-flex: 1;
+  flex: 1;
+}
+
+html /deep/ [flex][auto] {
+  -ms-flex: 1 1 auto;
+  -webkit-flex: 1 1 auto;
+  flex: 1 1 auto;
+}
+
+html /deep/ [flex][none] {
+  -ms-flex: none;
+  -webkit-flex: none;
+  flex: none;
+}
+
+html /deep/ [flex][one] {
+  -ms-flex: 1;
+  -webkit-flex: 1;
+  flex: 1;
+}
+
+html /deep/ [flex][two] {
+  -ms-flex: 2;
+  -webkit-flex: 2;
+  flex: 2;
+}
+
+html /deep/ [flex][three] {
+  -ms-flex: 3;
+  -webkit-flex: 3;
+  flex: 3;
+}
+
+html /deep/ [flex][four] {
+  -ms-flex: 4;
+  -webkit-flex: 4;
+  flex: 4;
+}
+
+html /deep/ [flex][five] {
+  -ms-flex: 5;
+  -webkit-flex: 5;
+  flex: 5;
+}
+
+html /deep/ [flex][six] {
+  -ms-flex: 6;
+  -webkit-flex: 6;
+  flex: 6;
+}
+
+html /deep/ [flex][seven] {
+  -ms-flex: 7;
+  -webkit-flex: 7;
+  flex: 7;
+}
+
+html /deep/ [flex][eight] {
+  -ms-flex: 8;
+  -webkit-flex: 8;
+  flex: 8;
+}
+
+html /deep/ [flex][nine] {
+  -ms-flex: 9;
+  -webkit-flex: 9;
+  flex: 9;
+}
+
+html /deep/ [flex][ten] {
+  -ms-flex: 10;
+  -webkit-flex: 10;
+  flex: 10;
+}
+
+html /deep/ [flex][eleven] {
+  -ms-flex: 11;
+  -webkit-flex: 11;
+  flex: 11;
+}
+
+html /deep/ [flex][twelve] {
+  -ms-flex: 12;
+  -webkit-flex: 12;
+  flex: 12;
+}
+
+/* alignment in cross axis */
+
+html /deep/ [layout][start] {
+  -ms-flex-align: start;
+  -webkit-align-items: flex-start;
+  align-items: flex-start;
+}
+
+html /deep/ [layout][center], html /deep/ [layout][center-center] {
+  -ms-flex-align: center;
+  -webkit-align-items: center;
+  align-items: center;
+}
+
+html /deep/ [layout][end] {
+  -ms-flex-align: end;
+  -webkit-align-items: flex-end;
+  align-items: flex-end;
+}
+
+/* alignment in main axis */
+
+html /deep/ [layout][start-justified] {
+  -ms-flex-pack: start;
+  -webkit-justify-content: flex-start;
+  justify-content: flex-start;
+}
+
+html /deep/ [layout][center-justified], html /deep/ [layout][center-center] {
+  -ms-flex-pack: center;
+  -webkit-justify-content: center;
+  justify-content: center;
+}
+
+html /deep/ [layout][end-justified] {
+  -ms-flex-pack: end;
+  -webkit-justify-content: flex-end;
+  justify-content: flex-end;
+}
+
+html /deep/ [layout][around-justified] {
+  -ms-flex-pack: around;
+  -webkit-justify-content: space-around;
+  justify-content: space-around;
+}
+
+html /deep/ [layout][justified] {
+  -ms-flex-pack: justify;
+  -webkit-justify-content: space-between;
+  justify-content: space-between;
+}
+
+/* self alignment */
+
+html /deep/ [self-start] {
+  -ms-align-self: flex-start;
+  -webkit-align-self: flex-start;
+  align-self: flex-start;
+}
+
+html /deep/ [self-center] {
+  -ms-align-self: center;
+  -webkit-align-self: center;
+  align-self: center;
+}
+
+html /deep/ [self-end] {
+  -ms-align-self: flex-end;
+  -webkit-align-self: flex-end;
+  align-self: flex-end;
+}
+
+html /deep/ [self-stretch] {
+  -ms-align-self: stretch;
+  -webkit-align-self: stretch;
+  align-self: stretch;
+}
+
+/*******************************
+          Other Layout
+*******************************/
+
+html /deep/ [block] {
+  display: block;
+}
+
+/* ie support for hidden */
+html /deep/ [hidden] {
+  display: none !important;
+}
+
+html /deep/ [relative] {
+  position: relative;
+}
+
+html /deep/ [fit] {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+}
+
+body[fullbleed] {
+  margin: 0;
+  height: 100vh;
+}
+
+/*******************************
+            Other
+*******************************/
+
+html /deep/ [segment], html /deep/ segment {
+  display: block;
+  position: relative;
+  -webkit-box-sizing: border-box;
+  -ms-box-sizing: border-box;
+  box-sizing: border-box;
+  margin: 1em 0.5em;
+  padding: 1em;
+  background-color: white;
+  -webkit-box-shadow: 0px 0px 0px 1px rgba(0, 0, 0, 0.1);
+  box-shadow: 0px 0px 0px 1px rgba(0, 0, 0, 0.1);
+  border-radius: 5px 5px 5px 5px;
+}
+
+</style>
+
+<script src="../polymer/polymer.js"></script>
+<!--<link rel="import" href="../polymer-dev/polymer.html">--> </div>
+
+<polymer-element name="core-key-helper" assetpath="">
+  
+</polymer-element>
+<script src="../core-overlay/core-key-helper.js"></script></div>
+<div hidden><!--
+Copyright (c) 2014 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+
+<polymer-element name="core-overlay-layer" assetpath="">
+<template>
+  <style>
+    :host {
+      position: fixed;
+      top: 0;
+      left: 0;
+      z-index: 1000;
+      display: none;
+    }
+
+    :host(.core-opened) {
+      display: block;
+    }
+  </style>
+  <content></content>
+</template>
+
+</polymer-element>
+<script src="../core-overlay/core-overlay-layer.js"></script></div>
+
+<!--
+The `core-overlay` element displays overlayed on top of other content. It starts
+out hidden and is displayed by setting its `opened` property to true.
+A `core-overlay's` opened state can be toggled by calling the `toggle`
+method.
+
+The `core-overlay` will, by default, show/hide itself when it's opened. The 
+`target` property may be set to another element to cause that element to 
+be shown when the overlay is opened.
+
+It's common to want a `core-overlay` to animate to its opened
+position. The `core-overlay` element uses a `core-transition` to handle
+animation. The default transition is `core-transition-fade` which 
+causes the overlay to fade in when displayed. See 
+<a href="../core-transition/">`core-transition`</a> for more
+information about customizing a `core-overlay's` opening animation. The
+`backdrop` property can be set to true to show a backdrop behind the overlay
+that will darken the rest of the window.
+
+An element that should close the `core-overlay` will automatically
+do so if it's given the `core-overlay-toggle` attribute. This attribute
+can be customized with the `closeAttribute` property. You can also use
+`closeSelector` if more general matching is needed.
+
+By default  `core-overlay` will close whenever the user taps outside it or
+presses the escape key. This behavior can be turned off via the
+`autoCloseDisabled` property.
+
+    <core-overlay>
+      <h2>Dialog</h2>
+      <input placeholder="say something..." autofocus>
+      <div>I agree with this wholeheartedly.</div>
+      <button core-overlay-toggle>OK</button>
+    </core-overlay>
+
+`core-overlay` will automatically size and position itself according to the 
+following rules. If the target's style.top and style.left are unset, the 
+target will be centered. The size of the target is constrained to be no larger
+than the window dimensions. The `margin` property specifies the extra amount
+of space that should be reserved around the overlay. This can be used to ensure
+that, for example, a drop shadow is always visible around the overlay.
+
+@group Core Elements
+@element core-overlay
+@homepage github.io
+-->
+<!--
+Fired when the `core-overlay`'s `opened` property changes.
+
+@event core-overlay-open
+@param {Object} detail
+@param {Object} detail.opened the opened state
+-->
+
+<style>
+  .core-overlay-backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: black;
+    opacity: 0;
+    transition: opacity 0.2s;
+  }
+
+  .core-overlay-backdrop.core-opened {
+    opacity: 0.6;
+  }
+</style>
+
+<polymer-element name="core-overlay" assetpath="">
+
+</polymer-element>
+<script src="../core-overlay/core-overlay.js"></script></div>
+
+<!--
+
+`paper-menu-button-overlay` is a helper class to position an overlay relative to another
+element, e.g. the button with a pulldown menu.
+
+@group Paper Elements
+@element paper-menu-button-overlay
+@extends core-overlay
+@homepage github.io
+-->
+
+<polymer-element name="paper-menu-button-overlay" extends="core-overlay" attributes="relatedTarget halign valign" assetpath="">
+  
+</polymer-element>
+<script src="paper-menu-button-overlay.js"></script>

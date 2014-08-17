@@ -1,0 +1,3057 @@
+<!doctype html>
+<html>
+<head>
+  <title>core-animated-pages</title>
+
+  <script src="../../platform/platform.js"></script>
+  <div hidden><!--
+Copyright (c) 2014 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+
+<!--
+Copyright (c) 2014 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+<!--
+
+The `core-icon` element displays an icon. By default an icon renders as 24px square.
+
+Example using src:
+
+    <core-icon src="star.png"></core-icon>
+
+Example setting size to 32px x 32px:
+
+    <core-icon class="big" src="big_star.png"></core-icon>
+
+    <style>
+      .big {
+        height: 32px;
+        width: 32px;
+      }
+    </style>
+
+Example using icon from default iconset:
+
+    <core-icon icon="menu"></core-icon>
+
+Example using icon `cherry` from custom iconset `fruit`:
+
+    <core-icon icon="fruit:cherry"></core-icon>
+
+See [core-iconset](#core-iconset) and [core-iconset-svg](#core-iconset-svg) for more information about
+how to use a custom iconset.
+
+See [core-icons](http://www.polymer-project.org/components/core-icons/demo.html) for the default set of icons. To use the default set of icons you'll need to include an import for `core-icons.html`. To use a different built-in set of icons, you'll need to include an import for `core-icons/iconsets/<iconset>.html`.
+
+@group Polymer Core Elements
+@element core-icon
+@homepage polymer.github.io
+-->
+<!--
+Copyright (c) 2014 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+
+<!--
+/**
+ * @group Polymer Core Elements
+ *
+ * The `core-iconset` element allows users to define their own icon sets. 
+ * The `src` property specifies the url of the icon image. Multiple icons may
+ * be included in this image and they may be organized into rows.
+ * The `icons` property is a space separated list of names corresponding to the
+ * icons. The names must be ordered as the icons are ordered in the icon image.
+ * Icons are expected to be square and are the size specified by the `iconSize`
+ * property. The `width` property corresponds to the width of the icon image 
+ * and must be specified if icons are arranged into multiple rows in the image.
+ *
+ * All `core-iconset` elements are available for use by other `core-iconset`
+ * elements via a database keyed by id. Typically, an element author that wants
+ * to support a set of custom icons uses a `core-iconset` to retrieve 
+ * and use another, user-defined iconset.
+ *
+ * Example:
+ *
+ *     <core-iconset id="my-icons" src="my-icons.png" width="96" iconSize="24"
+ *         icons="location place starta stopb bus car train walk">
+ *     </core-iconset>
+ *
+ * This will automatically register the icon set "my-icons" to the iconset
+ * database.  To use these icons from within another element, make a 
+ * `core-iconset` element and call the `byId` method to retrieve a
+ * given iconset. To apply a particular icon to an element, use the 
+ * `applyIcon` method. For example:
+ *
+ *     iconset.applyIcon(iconNode, 'car');
+ *
+ * Themed icon sets are also supported. The `core-iconset` can contain child
+ * `property` elements that specify a theme with an offsetX and offsetY of the
+ * theme within the icon resource. For example.
+ *
+ *     <core-iconset id="my-icons" src="my-icons.png" width="96" iconSize="24"
+ *         icons="location place starta stopb bus car train walk">
+ *       <property theme="special" offsetX="256" offsetY="24"></property>
+ *     </core-iconset>
+ *
+ * Then a themed icon can be applied like this:
+ *
+ *     iconset.applyIcon(iconNode, 'car', 'special');
+ *
+ * @element core-iconset
+ * @extends core-meta
+ * @homepage github.io
+ */
+-->
+
+<!--
+Copyright (c) 2014 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+
+<!--
+`core-meta` provides a method of constructing a self-organizing database.
+It is useful to collate element meta-data for things like catalogs and for 
+designer.
+
+Example, an element folder has a `metadata.html` file in it, that contains a 
+`core-meta`, something like this:
+
+    <core-meta id="my-element" label="My Element">
+      <property name="color" value="blue"></property>
+    </core-meta>
+
+An application can import as many of these files as it wants, and then use 
+`core-meta` again to access the collected data.
+
+    <script>
+      var meta = document.createElement('core-meta');
+      console.log(meta.list); // dump a list of all meta-data elements that have been created
+    </script>
+
+Use `byId(id)` to retrive a specific core-meta.
+
+    <script>
+      var meta = document.createElement('core-meta');
+      console.log(meta.byId('my-element'));
+    </script>
+
+By default all meta-data are stored in a single databse.  If your meta-data 
+have different types and want them to be stored separately, use `type` to 
+differentiate them.
+
+Example:
+
+    <core-meta id="x-foo" type="xElt"></core-meta>
+    <core-meta id="x-bar" type="xElt"></core-meta>
+    <core-meta id="y-bar" type="yElt"></core-meta>
+
+    <script>
+      var meta = document.createElement('core-meta');
+      meta.type = 'xElt';
+      console.log(meta.list);
+    </script>
+
+@group Polymer Core Elements
+@element core-meta
+@homepage github.io
+-->
+
+<!--
+Copyright (c) 2014 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+
+<!--
+Copyright (c) 2014 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+<style shim-shadowdom="">
+/*******************************
+          Flex Layout
+*******************************/
+
+html /deep/ [layout][horizontal], html /deep/ [layout][vertical] {
+  display: -ms-flexbox;
+  display: -webkit-flex;
+  display: flex;
+}
+
+html /deep/ [layout][horizontal][inline], html /deep/ [layout][vertical][inline] {
+  display: -ms-inline-flexbox;
+  display: -webkit-inline-flex;
+  display: inline-flex;
+}
+
+html /deep/ [layout][horizontal] {
+  -ms-flex-direction: row;
+  -webkit-flex-direction: row;
+  flex-direction: row;
+}
+
+html /deep/ [layout][horizontal][reverse] {
+  -ms-flex-direction: row-reverse;
+  -webkit-flex-direction: row-reverse;
+  flex-direction: row-reverse;
+}
+
+html /deep/ [layout][vertical] {
+  -ms-flex-direction: column;
+  -webkit-flex-direction: column;
+  flex-direction: column;
+}
+
+html /deep/ [layout][vertical][reverse] {
+  -ms-flex-direction: column-reverse;
+  -webkit-flex-direction: column-reverse;
+  flex-direction: column-reverse;
+}
+
+html /deep/ [layout][wrap] {
+  -ms-flex-wrap: wrap;
+  -webkit-flex-wrap: wrap;
+  flex-wrap: wrap;
+}
+
+html /deep/ [layout][wrap-reverse] {
+  -ms-flex-wrap: wrap-reverse;
+  -webkit-flex-wrap: wrap-reverse;
+  flex-wrap: wrap-reverse;
+}
+
+html /deep/ [flex] {
+  -ms-flex: 1;
+  -webkit-flex: 1;
+  flex: 1;
+}
+
+html /deep/ [flex][auto] {
+  -ms-flex: 1 1 auto;
+  -webkit-flex: 1 1 auto;
+  flex: 1 1 auto;
+}
+
+html /deep/ [flex][none] {
+  -ms-flex: none;
+  -webkit-flex: none;
+  flex: none;
+}
+
+html /deep/ [flex][one] {
+  -ms-flex: 1;
+  -webkit-flex: 1;
+  flex: 1;
+}
+
+html /deep/ [flex][two] {
+  -ms-flex: 2;
+  -webkit-flex: 2;
+  flex: 2;
+}
+
+html /deep/ [flex][three] {
+  -ms-flex: 3;
+  -webkit-flex: 3;
+  flex: 3;
+}
+
+html /deep/ [flex][four] {
+  -ms-flex: 4;
+  -webkit-flex: 4;
+  flex: 4;
+}
+
+html /deep/ [flex][five] {
+  -ms-flex: 5;
+  -webkit-flex: 5;
+  flex: 5;
+}
+
+html /deep/ [flex][six] {
+  -ms-flex: 6;
+  -webkit-flex: 6;
+  flex: 6;
+}
+
+html /deep/ [flex][seven] {
+  -ms-flex: 7;
+  -webkit-flex: 7;
+  flex: 7;
+}
+
+html /deep/ [flex][eight] {
+  -ms-flex: 8;
+  -webkit-flex: 8;
+  flex: 8;
+}
+
+html /deep/ [flex][nine] {
+  -ms-flex: 9;
+  -webkit-flex: 9;
+  flex: 9;
+}
+
+html /deep/ [flex][ten] {
+  -ms-flex: 10;
+  -webkit-flex: 10;
+  flex: 10;
+}
+
+html /deep/ [flex][eleven] {
+  -ms-flex: 11;
+  -webkit-flex: 11;
+  flex: 11;
+}
+
+html /deep/ [flex][twelve] {
+  -ms-flex: 12;
+  -webkit-flex: 12;
+  flex: 12;
+}
+
+/* alignment in cross axis */
+
+html /deep/ [layout][start] {
+  -ms-flex-align: start;
+  -webkit-align-items: flex-start;
+  align-items: flex-start;
+}
+
+html /deep/ [layout][center], html /deep/ [layout][center-center] {
+  -ms-flex-align: center;
+  -webkit-align-items: center;
+  align-items: center;
+}
+
+html /deep/ [layout][end] {
+  -ms-flex-align: end;
+  -webkit-align-items: flex-end;
+  align-items: flex-end;
+}
+
+/* alignment in main axis */
+
+html /deep/ [layout][start-justified] {
+  -ms-flex-pack: start;
+  -webkit-justify-content: flex-start;
+  justify-content: flex-start;
+}
+
+html /deep/ [layout][center-justified], html /deep/ [layout][center-center] {
+  -ms-flex-pack: center;
+  -webkit-justify-content: center;
+  justify-content: center;
+}
+
+html /deep/ [layout][end-justified] {
+  -ms-flex-pack: end;
+  -webkit-justify-content: flex-end;
+  justify-content: flex-end;
+}
+
+html /deep/ [layout][around-justified] {
+  -ms-flex-pack: around;
+  -webkit-justify-content: space-around;
+  justify-content: space-around;
+}
+
+html /deep/ [layout][justified] {
+  -ms-flex-pack: justify;
+  -webkit-justify-content: space-between;
+  justify-content: space-between;
+}
+
+/* self alignment */
+
+html /deep/ [self-start] {
+  -ms-align-self: flex-start;
+  -webkit-align-self: flex-start;
+  align-self: flex-start;
+}
+
+html /deep/ [self-center] {
+  -ms-align-self: center;
+  -webkit-align-self: center;
+  align-self: center;
+}
+
+html /deep/ [self-end] {
+  -ms-align-self: flex-end;
+  -webkit-align-self: flex-end;
+  align-self: flex-end;
+}
+
+html /deep/ [self-stretch] {
+  -ms-align-self: stretch;
+  -webkit-align-self: stretch;
+  align-self: stretch;
+}
+
+/*******************************
+          Other Layout
+*******************************/
+
+html /deep/ [block] {
+  display: block;
+}
+
+/* ie support for hidden */
+html /deep/ [hidden] {
+  display: none !important;
+}
+
+html /deep/ [relative] {
+  position: relative;
+}
+
+html /deep/ [fit] {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+}
+
+body[fullbleed] {
+  margin: 0;
+  height: 100vh;
+}
+
+/*******************************
+            Other
+*******************************/
+
+html /deep/ [segment], html /deep/ segment {
+  display: block;
+  position: relative;
+  -webkit-box-sizing: border-box;
+  -ms-box-sizing: border-box;
+  box-sizing: border-box;
+  margin: 1em 0.5em;
+  padding: 1em;
+  background-color: white;
+  -webkit-box-shadow: 0px 0px 0px 1px rgba(0, 0, 0, 0.1);
+  box-shadow: 0px 0px 0px 1px rgba(0, 0, 0, 0.1);
+  border-radius: 5px 5px 5px 5px;
+}
+
+</style>
+
+<script src="../../polymer/polymer.js"></script>
+<!--<link rel="import" href="../polymer-dev/polymer.html">--> 
+
+<polymer-element name="core-meta" attributes="label type" hidden assetpath="../../core-meta/">
+
+</polymer-element>
+
+
+<polymer-element name="core-iconset" extends="core-meta" attributes="src width icons iconSize" assetpath="../../core-iconset/">
+  
+  
+
+</polymer-element>
+
+
+<style shim-shadowdom="">/* Copyright (c) 2014 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt */
+
+html /deep/ core-icon {
+  display: inline-block;
+  vertical-align: middle;
+  background-repeat: no-repeat;
+  fill: currentcolor;
+  position: relative;
+  height: 24px;
+  width: 24px;
+}</style>
+
+<polymer-element name="core-icon" attributes="src icon alt" assetpath="../../core-icon/">
+
+
+</polymer-element>
+
+<!--
+Copyright (c) 2014 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+
+<!--
+/**
+ * @group Polymer Core Elements
+ *
+ * The `core-iconset-svg` element allows users to define their own icon sets
+ * that contain svg icons. The svg icon elements should be children of the
+ * `core-iconset-svg` element. Multiple icons should be given distinct id's.
+ *
+ * Using svg elements to create icons has a few advantages over traditional
+ * bitmap graphics like jpg or png. Icons that use svg are vector based so they
+ * are resolution independent and should look good on any device. They are
+ * stylable via css. Icons can be themed, colorized, and even animated.
+ *
+ * Example:
+ *
+ *     <core-iconset-svg id="my-svg-icons" iconSize="24">
+ *       <svg>
+ *         <defs>
+ *           <g id="shape">
+ *             <rect x="50" y="50" width="50" height="50" />
+ *             <circle cx="50" cy="50" r="50" />
+ *           </g>
+ *         </defs>
+ *       </svg>
+ *     </core-iconset-svg>
+ *
+ * This will automatically register the icon set "my-svg-icons" to the iconset
+ * database.  To use these icons from within another element, make a
+ * `core-iconset` element and call the `byId` method
+ * to retrieve a given iconset. To apply a particular icon inside an
+ * element use the `applyIcon` method. For example:
+ *
+ *     iconset.applyIcon(iconNode, 'car');
+ *
+ * @element core-iconset-svg
+ * @extends core-meta
+ * @homepage github.io
+ */
+-->
+
+
+
+<polymer-element name="core-iconset-svg" extends="core-meta" attributes="iconSize" assetpath="../../core-iconset-svg/">
+
+  
+
+</polymer-element>
+
+<core-iconset-svg id="av" iconsize="24">
+<svg><defs>
+<g id="closed-caption"><path d="M19,4H5C3.9,4,3,4.9,3,6v12c0,1.1,0.9,2,2,2h14c1.1,0,2-0.9,2-2V6C21,4.9,20.1,4,19,4z M11,11H9.5v-0.5h-2v3h2V13H11v1c0,0.6-0.4,1-1,1H7c-0.6,0-1-0.4-1-1v-4c0-0.6,0.4-1,1-1h3c0.6,0,1,0.4,1,1V11z M18,11h-1.5v-0.5h-2v3h2V13H18v1c0,0.6-0.4,1-1,1h-3c-0.6,0-1-0.4-1-1v-4c0-0.6,0.4-1,1-1h3c0.6,0,1,0.4,1,1V11z"/></g>
+<g id="fast-forward"><path d="M4,18l8.5-6L4,6V18z M13,6v12l8.5-6L13,6z"/></g>
+<g id="fast-rewind"><path d="M11,18V6l-8.5,6L11,18z M11.5,12l8.5,6V6L11.5,12z"/></g>
+<g id="games"><path d="M15,7.5V2H9v5.5l3,3L15,7.5z M7.5,9H2v6h5.5l3-3L7.5,9z M9,16.5V22h6v-5.5l-3-3L9,16.5z M16.5,9l-3,3l3,3H22V9H16.5z"/></g>
+<g id="high-quality"><path d="M19,4H5C3.9,4,3,4.9,3,6v12c0,1.1,0.9,2,2,2h14c1.1,0,2-0.9,2-2V6C21,4.9,20.1,4,19,4z M11,15H9.5v-2h-2v2H6V9h1.5v2.5h2V9H11V15z M18,14c0,0.6-0.4,1-1,1h-0.8v1.5h-1.5V15H14c-0.6,0-1-0.4-1-1v-4c0-0.6,0.4-1,1-1h3c0.6,0,1,0.4,1,1V14z M14.5,13.5h2v-3h-2V13.5z"/></g>
+<g id="loop"><path d="M12,4V1L8,5l4,4V6c3.3,0,6,2.7,6,6c0,1-0.3,2-0.7,2.8l1.5,1.5C19.5,15,20,13.6,20,12C20,7.6,16.4,4,12,4z M12,18c-3.3,0-6-2.7-6-6c0-1,0.3-2,0.7-2.8L5.2,7.7C4.5,9,4,10.4,4,12c0,4.4,3.6,8,8,8v3l4-4l-4-4V18z"/></g>
+<g id="mic"><path d="M12,14c1.7,0,3-1.3,3-3l0-6c0-1.7-1.3-3-3-3c-1.7,0-3,1.3-3,3v6C9,12.7,10.3,14,12,14z M17.3,11c0,3-2.5,5.1-5.3,5.1c-2.8,0-5.3-2.1-5.3-5.1H5c0,3.4,2.7,6.2,6,6.7V21h2v-3.3c3.3-0.5,6-3.3,6-6.7H17.3z"/></g>
+<g id="mic-none"><path d="M12,14c1.7,0,3-1.3,3-3l0-6c0-1.7-1.3-3-3-3c-1.7,0-3,1.3-3,3v6C9,12.7,10.3,14,12,14z M10.8,4.9c0-0.7,0.5-1.2,1.2-1.2c0.7,0,1.2,0.5,1.2,1.2l0,6.2c0,0.7-0.5,1.2-1.2,1.2c-0.7,0-1.2-0.5-1.2-1.2V4.9z M17.3,11c0,3-2.5,5.1-5.3,5.1c-2.8,0-5.3-2.1-5.3-5.1H5c0,3.4,2.7,6.2,6,6.7V21h2v-3.3c3.3-0.5,6-3.3,6-6.7H17.3z"/></g>
+<g id="mic-off"><path d="M19,11h-1.7c0,0.7-0.2,1.4-0.4,2l1.2,1.2C18.7,13.3,19,12.2,19,11z"/><path d="M15,11.2c0-0.1,0-0.1,0-0.2V5c0-1.7-1.3-3-3-3c-1.7,0-3,1.3-3,3v0.2L15,11.2z"/><path d="M4.3,3L3,4.3l6,6L9,11c0,1.7,1.3,3,3,3c0.2,0,0.4,0,0.7-0.1l1.7,1.7c-0.7,0.3-1.5,0.5-2.3,0.5c-2.8,0-5.3-2.1-5.3-5.1H5c0,3.4,2.7,6.2,6,6.7V21h2v-3.3c0.9-0.1,1.8-0.5,2.5-0.9l4.2,4.2l1.3-1.3L4.3,3z"/></g>
+<g id="movie"><path d="M18,4l2,4h-3l-2-4h-2l2,4h-3l-2-4H8l2,4H7L5,4H4C2.9,4,2,4.9,2,6l0,12c0,1.1,0.9,2,2,2h16c1.1,0,2-0.9,2-2V4H18z"/></g>
+<g id="news"><path d="M20.3,4.7L18.7,3L17,4.7L15.3,3l-1.7,1.7L12,3l-1.7,1.7L8.7,3L7,4.7L5.3,3L3.7,4.7L2,3v16c0,1.1,0.9,2,2,2h16c1.1,0,2-0.9,2-2l0-16L20.3,4.7z M12,19H4v-7h8V19z M20,19h-7v-1h7V19z M20,17h-7v-1h7V17z M20,15h-7v-1h7V15z M20,13h-7v-1h7V13z M20,11H4V8h16V11z"/></g>
+<g id="pause"><path d="M6,19h4V5H6V19z M14,5v14h4V5H14z"/></g>
+<g id="pause-circle-fill"><path d="M12,2C6.5,2,2,6.5,2,12s4.5,10,10,10c5.5,0,10-4.5,10-10S17.5,2,12,2z M11,16H9V8h2V16z M15,16h-2V8h2V16z"/></g>
+<g id="pause-circle-outline"><path d="M9,16h2V8H9V16z M12,2C6.5,2,2,6.5,2,12s4.5,10,10,10c5.5,0,10-4.5,10-10S17.5,2,12,2z M12,20c-4.4,0-8-3.6-8-8s3.6-8,8-8c4.4,0,8,3.6,8,8S16.4,20,12,20z M13,16h2V8h-2V16z"/></g>
+<g id="play-arrow"><polygon points="8,5 8,19 19,12 "></polygon></g>
+<g id="play-circle-fill"><path d="M12,2C6.5,2,2,6.5,2,12s4.5,10,10,10c5.5,0,10-4.5,10-10S17.5,2,12,2z M10,16.5v-9l6,4.5L10,16.5z"/></g>
+<g id="play-circle-outline"><path d="M10,16.5l6-4.5l-6-4.5V16.5z M12,2C6.5,2,2,6.5,2,12s4.5,10,10,10c5.5,0,10-4.5,10-10S17.5,2,12,2z M12,20c-4.4,0-8-3.6-8-8s3.6-8,8-8c4.4,0,8,3.6,8,8S16.4,20,12,20z"/></g>
+<g id="queue"><path d="M3,5H1v16c0,1.1,0.9,2,2,2h16v-2H3V5z M21,1H7C5.9,1,5,1.9,5,3v14c0,1.1,0.9,2,2,2h14c1.1,0,2-0.9,2-2V3C23,1.9,22.1,1,21,1z M19,11h-4v4h-2v-4H9V9h4V5h2v4h4V11z"/></g>
+<g id="replay"><path d="M12,5V1L7,6l5,5V7c3.3,0,6,2.7,6,6s-2.7,6-6,6c-3.3,0-6-2.7-6-6H4c0,4.4,3.6,8,8,8c4.4,0,8-3.6,8-8S16.4,5,12,5z"/></g>
+<g id="shuffle"><path d="M10.6,9.2L5.4,4L4,5.4l5.2,5.2L10.6,9.2z M14.5,4l2,2L4,18.6L5.4,20L18,7.5l2,2V4H14.5z M14.8,13.4l-1.4,1.4l3.1,3.1l-2,2H20v-5.5l-2,2L14.8,13.4z"/></g>
+<g id="skip-next"><path d="M6,18l8.5-6L6,6V18z M16,6v12h2V6H16z"/></g>
+<g id="skip-previous"><rect x="6" y="6" width="2" height="12"/><polygon points="9.5,12 18,18 18,6 "></polygon></g>
+<g id="stop"><rect x="6" y="6" width="12" height="12"/></g>
+<g id="videocam"><path d="M17,10.5V7c0-0.6-0.4-1-1-1H4C3.4,6,3,6.4,3,7v10c0,0.6,0.4,1,1,1h12c0.6,0,1-0.4,1-1v-3.5l4,4v-11L17,10.5z"/></g>
+<g id="videocam-off"><path d="M21,6.5l-4,4V7c0-0.6-0.4-1-1-1H9.8L21,17.2V6.5z M3.3,2L2,3.3L4.7,6H4C3.4,6,3,6.4,3,7v10c0,0.6,0.4,1,1,1h12c0.2,0,0.4-0.1,0.5-0.2l3.2,3.2l1.3-1.3L3.3,2z"/></g>
+<g id="video-youtube"><path d="M20,4.4C19.4,4.2,15.7,4,12,4C8.3,4,4.6,4.2,4,4.4c-1.6,0.5-2,4-2,7.6s0.4,7.1,2,7.6c0.6,0.2,4.3,0.4,8,0.4c3.7,0,7.4-0.2,8-0.4c1.6-0.5,2-4,2-7.6S21.6,4.9,20,4.4z M10,16.5v-9l6,4.5L10,16.5z"/></g>
+<g id="volume-down"><path d="M18.5,12c0-1.8-1-3.3-2.5-4V16C17.5,15.3,18.5,13.8,18.5,12z M5,9c0,0,0,6,0,6h4l5,5V4L9,9H5z"/></g>
+<g id="volume-mute"><path d="M7,9c0,0,0,6,0,6h4l5,5V4l-5,5H7z"/></g>
+<g id="volume-off"><path d="M16.5,12c0-1.8-1-3.3-2.5-4v2.2l2.5,2.5C16.5,12.4,16.5,12.2,16.5,12z M19,12c0,0.9-0.2,1.8-0.5,2.6l1.5,1.5c0.7-1.2,1-2.7,1-4.2c0-4.3-3-7.9-7-8.8v2.1C16.9,6.2,19,8.8,19,12z M4.3,3L3,4.3L7.7,9H3c0,0,0,6,0,6h4l5,5v-6.7l4.3,4.3c-0.7,0.5-1.4,0.9-2.3,1.2v2.1c1.4-0.3,2.6-0.9,3.7-1.8l2,2l1.3-1.3l-9-9L4.3,3z M12,4L9.9,6.1L12,8.2V4z"/></g>
+<g id="volume-up"><path d="M3,9c0,0,0,6,0,6h4l5,5V4L7,9H3z M16.5,12c0-1.8-1-3.3-2.5-4V16C15.5,15.3,16.5,13.8,16.5,12z M14,3.2v2.1c2.9,0.9,5,3.5,5,6.7s-2.1,5.8-5,6.7v2.1c4-0.9,7-4.5,7-8.8S18,4.1,14,3.2z"/></g>
+<g id="web"><path d="M20,4H4C2.9,4,2,4.9,2,6l0,12c0,1.1,0.9,2,2,2h16c1.1,0,2-0.9,2-2V6C22,4.9,21.1,4,20,4z M15,18H4v-4h11V18z M15,13H4V9h11V13z M20,18h-4V9h4V18z"/></g>
+</defs></svg>
+</core-iconset-svg>
+</div>
+  <div hidden><!--
+Copyright (c) 2014 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+
+<!--
+`<paper-fab>` is a floating action button with an icon. It comes in two sizes: regular
+size and a smaller size by applying the class `mini`.
+
+Example:
+
+    <paper-fab icon="favorite"></paper-fab>
+    <paper-fab class="mini"></paper-fab>
+
+@group Paper Elements
+@element paper-fab
+@homepage github.io
+@extends paper-icon-button
+-->
+
+
+<!--
+Copyright (c) 2014 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE
+The complete set of authors may be found at http://polymer.github.io/AUTHORS
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS
+-->
+
+<!--
+@group Paper Elements
+`paper-icon-button` is a button with an image placed at the center.
+
+Example:
+
+    <paper-icon-button iconSrc="star.png"></paper-icon-button>
+
+`paper-icon-button` includes a default icon set.  Use `icon` to specify 
+which icon from the icon set to use.
+
+Example:
+
+    <paper-icon-button icon="menu"></paper-icon-button>
+
+The icons provided by `core-icons` are SVG, and you can style them with CSS.
+
+Example:
+
+    <paper-icon-button icon="favorite" style="fill:red;"></paper-icon-button>
+
+See `core-iconset` for more information about how to use a custom icon set.
+
+@element paper-icon-button
+@extends paper-button
+@homepage github.io
+-->
+
+
+<!--
+Copyright (c) 2014 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+
+<!--
+@group Paper Elements
+
+`paper-button` is a button containing text or an image. When the user touches
+the button, a ripple effect emanates from the point of contact.
+
+A `paper-button` may be flat or raised. A raised button behaves like a piece
+of paper resting on another sheet, and lifts up upon press. Flat buttons do
+not raise up. Add the `raisedButton` attribute to make a raised button.
+
+Example:
+
+    <paper-button label="flat button"></paper-button>
+    <paper-button label="raised button" raisedButton></paper-button>
+
+A button should be styled with a background color, text color, ripple color
+and hover color.
+
+To style the background, text and hover color, apply the `background` and
+`color` CSS properties to the button. To style the ripple color, apply the
+`color` CSS property to the `#ripple` element in the button's shadow root:
+
+    /* Style #my-button blue with white text and darker blue ink. */
+    #my-button {
+        background: #4285f4;
+        color: #fff;
+    }
+
+    #my-button:hover {
+        background: #2a56c6;
+    }
+
+    #my-button::shadow #ripple {
+        color: #2a56c6;
+    }
+
+@element paper-button
+@extends paper-focusable
+-->
+
+
+
+<!--
+Copyright (c) 2014 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+
+<!--
+/**
+ * @group Paper Elements
+ *
+ * paper-focusable is a base class for paper elements that can be focused.
+ *
+ * @element paper-focusable
+ * @status beta
+ * @homepage github.io
+ */
+-->
+
+
+
+<polymer-element name="paper-focusable" attributes="active focused disabled isToggle" tabindex="0" on-down="{{downAction}}" on-up="{{upAction}}" on-focus="{{focusAction}}" on-blur="{{blurAction}}" on-contextmenu="{{contextMenuAction}}" assetpath="../../paper-focusable/">
+
+  <template>
+    <style>
+      :host([disabled]) {
+        pointer-events: none;
+      }
+    </style>
+    <content></content>
+  </template>
+
+  
+</polymer-element>
+
+<!--
+Copyright (c) 2014 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+
+<!--
+`paper-ripple` provides a visual effect that other paper elements can
+use to simulate a rippling effect emanating from the point of contact.  The
+effect can be visualized as a concentric circle with motion.
+
+Example:
+
+    <paper-ripple></paper-ripple>
+
+`paper-ripple` listens to "down" and "up" events so it would display ripple
+effect when touches on it.  You can also defeat the default behavior and 
+manually route the down and up actions to the ripple element.  Note that it is
+important if you call downAction() you will have to make sure to call upAction()
+so that `paper-ripple` would end the animation loop.
+
+Example:
+
+    <paper-ripple id="ripple" style="pointer-events: none;"></paper-ripple>
+    ...
+    downAction: function(e) {
+      this.$.ripple.downAction({x: e.x, y: e.y});
+    },
+    upAction: function(e) {
+      this.$.ripple.upAction();
+    }
+
+Styling ripple effect:
+
+  Use CSS color property to style the ripple:
+
+    paper-ripple {
+      color: #4285f4;
+    }
+
+  Note that CSS color property is inherited so it is not required to set it on
+  the `paper-ripple` element directly.
+
+Apply `recenteringTouch` class to make the recentering rippling effect.
+
+    <paper-ripple class="recenteringTouch"></paper-ripple>
+
+Apply `circle` class to make the rippling effect within a circle.
+
+    <paper-ripple class="circle"></paper-ripple>
+
+@group Paper Elements
+@element paper-ripple
+@homepage github.io
+-->
+
+
+
+<polymer-element name="paper-ripple" attributes="initialOpacity opacityDecayVelocity" assetpath="../../paper-ripple/">
+<template>
+
+  <style>
+
+    :host {
+      display: block;
+      position: relative;
+    }
+
+    #canvas {
+      pointer-events: none;
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+    }
+
+    :host(.circle) #canvas {
+      border-radius: 50%;
+    }
+
+  </style>
+
+</template>
+
+</polymer-element>
+
+<!--
+Copyright (c) 2014 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+
+<!--
+The `paper-shadow` element is a helper to add shadows to elements.
+Paper shadows are composed of two shadows on top of each other. We
+mimic this effect by using two elements on top of each other, each with a
+different drop shadow. You can apply the shadow to an element by assigning
+it as the target. If you do not specify a target, the shadow is applied to
+the `paper-shadow` element's parent element or shadow host element if its
+parent is a shadow root. Alternatively, you can use the CSS classes included
+by this element directly.
+
+Example:
+
+    <div id="myCard" class="card"></div>
+    <paper-shadow id="myShadow" z="1"></div>
+
+    // Assign a target explicitly
+    myShadow.target = document.getElementById('myCard');
+
+    // Auto-assign the target.
+    <div class="card">
+      <paper-shadow z="1"></paper-shadow>
+    </div>
+
+    // Use the classes directly
+    <div class="card paper-shadow-top paper-shadow-top-z-1">
+      <div class="card-inner paper-shadow-bottom paper-shadow-bottom-z-1"></div>
+    </div>
+
+If you assign a target to a `paper-shadow` element, it creates two nodes and inserts
+them as the first children of the target, or the first children of the target's shadow
+root if there is one. This implies:
+
+  1. If the primary node that drops the shadow has styling that affects its shape,
+     the same styling must be applied to elements with class `paper-shadow`.
+     `border-radius` is a very common property and is inherited automatically.
+
+  2. The target's overflow property will be set to `overflow: visible` because the
+     shadow is rendered beyond the bounds of its container. Position the shadow as a
+     separate layer and use a different child element for clipping if needed.
+
+@group Paper Elements
+@class paper-shadow
+-->
+
+
+
+<polymer-element name="paper-shadow" assetpath="../../paper-shadow/">
+
+  <template>
+
+    <style no-shim="">.paper-shadow {
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  border-radius: inherit;
+  pointer-events: none;
+}
+
+.paper-shadow-animated.paper-shadow {
+  transition: box-shadow 0.28s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.paper-shadow-top-z-1 {
+  box-shadow: 0 2px 10px 0 rgba(0, 0, 0, 0.16);
+}
+
+.paper-shadow-bottom-z-1 {
+  box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.26);
+}
+
+.paper-shadow-top-z-2 {
+  box-shadow: 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+}
+
+.paper-shadow-bottom-z-2 {
+  box-shadow: 0 8px 17px 0 rgba(0, 0, 0, 0.2);
+}
+
+.paper-shadow-top-z-3 {
+  box-shadow: 0 17px 50px 0 rgba(0, 0, 0, 0.19);
+}
+
+.paper-shadow-bottom-z-3 {
+  box-shadow: 0 12px 15px 0 rgba(0, 0, 0, 0.24);
+}
+
+.paper-shadow-top-z-4 {
+  box-shadow: 0 25px 55px 0 rgba(0, 0, 0, 0.21);
+}
+
+.paper-shadow-bottom-z-4 {
+  box-shadow: 0 16px 28px 0 rgba(0, 0, 0, 0.22);
+}
+
+.paper-shadow-top-z-5 {
+  box-shadow: 0 40px 77px 0 rgba(0, 0, 0, 0.22);
+}
+
+.paper-shadow-bottom-z-5 {
+  box-shadow: 0 27px 24px 0 rgba(0, 0, 0, 0.2);
+}
+
+.paper-shadow-animate-z-1-z-2.paper-shadow-top {
+  -webkit-transition: none;
+  -webkit-animation: animate-shadow-top-z-1-z-2 0.7s infinite alternate;
+}
+
+.paper-shadow-animate-z-1-z-2 .paper-shadow-bottom {
+  -webkit-transition: none;
+  -webkit-animation: animate-shadow-bottom-z-1-z-2 0.7s infinite alternate;
+}
+
+@-webkit-keyframes animate-shadow-top-z-1-z-2 {
+  0% {
+    box-shadow: 0 2px 10px 0 rgba(0, 0, 0, 0.16);
+  }
+  100% {
+    box-shadow: 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+  }
+}
+
+@-webkit-keyframes animate-shadow-bottom-z-1-z-2 {
+  0% {
+    box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.26);
+  }
+  100% {
+    box-shadow: 0 8px 17px 0 rgba(0, 0, 0, 0.2);
+  }
+}</style>
+
+  </template>
+
+  
+</polymer-element>
+
+
+<polymer-element name="paper-button" extends="paper-focusable" attributes="label raisedButton iconSrc icon" role="button" assetpath="../../paper-button/">
+
+  <template>
+
+    <style>:host {
+  display: inline-block;
+  position: relative;
+  border: 0;
+  background: transparent;
+  text-align: center;
+  font: inherit;
+  text-transform: uppercase;
+  outline: none;
+  border-radius: 3px;
+  -webkit-user-select: none;
+  user-select: none;
+  cursor: pointer;
+}
+
+:host(.hover:hover) {
+  background: #e4e4e4;
+}
+
+:host([raisedButton]) {
+  background: #dfdfdf;
+}
+
+:host([raisedButton].hover:hover) {
+  background: #d6d6d6;
+}
+
+:host([disabled]) {
+  background: #eaeaea !important;
+  color: #a8a8a8 !important;
+  cursor: auto;
+}
+
+#shadow-container {
+  border-radius: inherit;
+}
+
+#clip {
+  position: relative;
+  border-radius: inherit;
+  overflow: hidden;
+}
+
+/*
+#focusBg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  opacity: 0;
+  border-radius: inherit;
+  background: #c3c3c3;
+  -webkit-transition: opacity 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: opacity 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+:host([focused]) #focusBg {
+  -webkit-transition: none;
+  transition: none;
+  -webkit-animation: focus-fade 0.7s infinite alternate;
+  animation: focus-fade 0.7s infinite alternate;
+}
+
+@-webkit-keyframes focus-fade {
+  0% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+@keyframes focus-fade {
+  0% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+*/
+
+#ripple {
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  color: #d1d1d1;
+  pointer-events: none;
+}
+
+:host([raisedButton]) #ripple {
+  color: #cecece;
+}
+
+#ripple::shadow canvas {
+  top: 0;
+  left: 0;
+}
+
+#content {
+  /* needed to position the ink behind the content */
+  position: relative;
+}
+
+#icon {
+  margin: 8px;
+}
+
+#content > span {
+  display: inline-block;
+  margin: 0.5em;
+}</style>
+
+    <template if="{{raisedButton}}">
+      <div fit="" id="shadow-container">
+        <paper-shadow id="shadow" z="{{z}}" animated=""></paper-shadow>
+      </div>
+    </template>
+
+    <div id="clip">
+      <!-- <div id="focusBg"></div> -->
+      <paper-ripple id="ripple"></paper-ripple>
+      <div id="content">
+        <template if="{{iconSrc || icon}}">
+          <core-icon id="icon" src="{{iconSrc}}" icon="{{icon}}"></core-icon>
+        </template>
+        <template if="{{label}}">
+          <span>{{label}}</span>
+        </template>
+      </div>
+    </div>
+
+  </template>
+
+  
+</polymer-element>
+
+
+<polymer-element name="paper-icon-button" extends="paper-button" attributes="fill" assetpath="../../paper-icon-button/">
+
+  <template>
+
+    <style>/*
+Copyright 2013 The Polymer Authors. All rights reserved.
+Use of this source code is governed by a BSD-style
+license that can be found in the LICENSE file.
+*/
+
+:host([disabled]) {
+  background: none !important;
+}
+
+:host([disabled]) /deep/ #icon {
+  fill: #c9c9c9;
+}
+
+:host(:not([fill])) /deep/ #focusBg {
+  border-radius: 50%;
+}</style>
+
+    <shadow></shadow>
+
+  </template>
+
+  
+  
+</polymer-element>
+
+
+<polymer-element name="paper-fab" extends="paper-icon-button" assetpath="../../paper-fab/">
+
+  <template>
+
+    <style>:host {
+  box-sizing: border-box;
+  width: 56px;
+  height: 56px;
+  background: #d23f31;
+  border-radius: 50%;
+  fill: #fff;
+}
+
+:host(.mini) {
+  width: 40px;
+  height: 40px;
+}
+
+:host /deep/ #focusBg {
+  display: none;
+}
+
+:host /deep/ #icon {
+  display: block;
+  margin: 16px;
+}
+
+:host(.mini) /deep/ #icon {
+  margin: 8px;
+}
+</style>
+
+    <shadow></shadow>
+
+  </template>
+
+  
+</polymer-element>
+</div>
+
+  <div hidden><div hidden><!--
+Copyright (c) 2014 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+
+<!--
+@group Polymer Core Elements
+
+`<core-selector>` is used to manage a list of elements that can be selected.
+
+The attribute `selected` indicates which item element is being selected.
+The attribute `multi` indicates if multiple items can be selected at once.
+Tapping on the item element would fire `core-activate` event. Use
+`core-select` event to listen for selection changes.
+
+Example:
+
+    <core-selector selected="0">
+      <div>Item 1</div>
+      <div>Item 2</div>
+      <div>Item 3</div>
+    </core-selector>
+
+`<core-selector>` is not styled. Use the `core-selected` CSS class to style the selected element.
+
+    <style>
+      .item.core-selected {
+        background: #eee;
+      }
+    </style>
+    ...
+    <core-selector>
+      <div class="item">Item 1</div>
+      <div class="item">Item 2</div>
+      <div class="item">Item 3</div>
+    </core-selector>
+
+@element core-selector
+@status stable
+@homepage github.io
+-->
+
+<!--
+Fired when an item's selection state is changed. This event is fired both
+when an item is selected or deselected. The `isSelected` detail property
+contains the selection state.
+
+@event core-select
+@param {Object} detail
+  @param {boolean} detail.isSelected true for selection and false for deselection
+  @param {Object} detail.item the item element
+-->
+<!--
+Fired when an item element is tapped.
+
+@event core-activate
+@param {Object} detail
+  @param {Object} detail.item the item element
+-->
+
+<!--
+Copyright (c) 2014 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+
+<!--
+Copyright (c) 2014 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+<style shim-shadowdom="">
+/*******************************
+          Flex Layout
+*******************************/
+
+html /deep/ [layout][horizontal], html /deep/ [layout][vertical] {
+  display: -ms-flexbox;
+  display: -webkit-flex;
+  display: flex;
+}
+
+html /deep/ [layout][horizontal][inline], html /deep/ [layout][vertical][inline] {
+  display: -ms-inline-flexbox;
+  display: -webkit-inline-flex;
+  display: inline-flex;
+}
+
+html /deep/ [layout][horizontal] {
+  -ms-flex-direction: row;
+  -webkit-flex-direction: row;
+  flex-direction: row;
+}
+
+html /deep/ [layout][horizontal][reverse] {
+  -ms-flex-direction: row-reverse;
+  -webkit-flex-direction: row-reverse;
+  flex-direction: row-reverse;
+}
+
+html /deep/ [layout][vertical] {
+  -ms-flex-direction: column;
+  -webkit-flex-direction: column;
+  flex-direction: column;
+}
+
+html /deep/ [layout][vertical][reverse] {
+  -ms-flex-direction: column-reverse;
+  -webkit-flex-direction: column-reverse;
+  flex-direction: column-reverse;
+}
+
+html /deep/ [layout][wrap] {
+  -ms-flex-wrap: wrap;
+  -webkit-flex-wrap: wrap;
+  flex-wrap: wrap;
+}
+
+html /deep/ [layout][wrap-reverse] {
+  -ms-flex-wrap: wrap-reverse;
+  -webkit-flex-wrap: wrap-reverse;
+  flex-wrap: wrap-reverse;
+}
+
+html /deep/ [flex] {
+  -ms-flex: 1;
+  -webkit-flex: 1;
+  flex: 1;
+}
+
+html /deep/ [flex][auto] {
+  -ms-flex: 1 1 auto;
+  -webkit-flex: 1 1 auto;
+  flex: 1 1 auto;
+}
+
+html /deep/ [flex][none] {
+  -ms-flex: none;
+  -webkit-flex: none;
+  flex: none;
+}
+
+html /deep/ [flex][one] {
+  -ms-flex: 1;
+  -webkit-flex: 1;
+  flex: 1;
+}
+
+html /deep/ [flex][two] {
+  -ms-flex: 2;
+  -webkit-flex: 2;
+  flex: 2;
+}
+
+html /deep/ [flex][three] {
+  -ms-flex: 3;
+  -webkit-flex: 3;
+  flex: 3;
+}
+
+html /deep/ [flex][four] {
+  -ms-flex: 4;
+  -webkit-flex: 4;
+  flex: 4;
+}
+
+html /deep/ [flex][five] {
+  -ms-flex: 5;
+  -webkit-flex: 5;
+  flex: 5;
+}
+
+html /deep/ [flex][six] {
+  -ms-flex: 6;
+  -webkit-flex: 6;
+  flex: 6;
+}
+
+html /deep/ [flex][seven] {
+  -ms-flex: 7;
+  -webkit-flex: 7;
+  flex: 7;
+}
+
+html /deep/ [flex][eight] {
+  -ms-flex: 8;
+  -webkit-flex: 8;
+  flex: 8;
+}
+
+html /deep/ [flex][nine] {
+  -ms-flex: 9;
+  -webkit-flex: 9;
+  flex: 9;
+}
+
+html /deep/ [flex][ten] {
+  -ms-flex: 10;
+  -webkit-flex: 10;
+  flex: 10;
+}
+
+html /deep/ [flex][eleven] {
+  -ms-flex: 11;
+  -webkit-flex: 11;
+  flex: 11;
+}
+
+html /deep/ [flex][twelve] {
+  -ms-flex: 12;
+  -webkit-flex: 12;
+  flex: 12;
+}
+
+/* alignment in cross axis */
+
+html /deep/ [layout][start] {
+  -ms-flex-align: start;
+  -webkit-align-items: flex-start;
+  align-items: flex-start;
+}
+
+html /deep/ [layout][center], html /deep/ [layout][center-center] {
+  -ms-flex-align: center;
+  -webkit-align-items: center;
+  align-items: center;
+}
+
+html /deep/ [layout][end] {
+  -ms-flex-align: end;
+  -webkit-align-items: flex-end;
+  align-items: flex-end;
+}
+
+/* alignment in main axis */
+
+html /deep/ [layout][start-justified] {
+  -ms-flex-pack: start;
+  -webkit-justify-content: flex-start;
+  justify-content: flex-start;
+}
+
+html /deep/ [layout][center-justified], html /deep/ [layout][center-center] {
+  -ms-flex-pack: center;
+  -webkit-justify-content: center;
+  justify-content: center;
+}
+
+html /deep/ [layout][end-justified] {
+  -ms-flex-pack: end;
+  -webkit-justify-content: flex-end;
+  justify-content: flex-end;
+}
+
+html /deep/ [layout][around-justified] {
+  -ms-flex-pack: around;
+  -webkit-justify-content: space-around;
+  justify-content: space-around;
+}
+
+html /deep/ [layout][justified] {
+  -ms-flex-pack: justify;
+  -webkit-justify-content: space-between;
+  justify-content: space-between;
+}
+
+/* self alignment */
+
+html /deep/ [self-start] {
+  -ms-align-self: flex-start;
+  -webkit-align-self: flex-start;
+  align-self: flex-start;
+}
+
+html /deep/ [self-center] {
+  -ms-align-self: center;
+  -webkit-align-self: center;
+  align-self: center;
+}
+
+html /deep/ [self-end] {
+  -ms-align-self: flex-end;
+  -webkit-align-self: flex-end;
+  align-self: flex-end;
+}
+
+html /deep/ [self-stretch] {
+  -ms-align-self: stretch;
+  -webkit-align-self: stretch;
+  align-self: stretch;
+}
+
+/*******************************
+          Other Layout
+*******************************/
+
+html /deep/ [block] {
+  display: block;
+}
+
+/* ie support for hidden */
+html /deep/ [hidden] {
+  display: none !important;
+}
+
+html /deep/ [relative] {
+  position: relative;
+}
+
+html /deep/ [fit] {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+}
+
+body[fullbleed] {
+  margin: 0;
+  height: 100vh;
+}
+
+/*******************************
+            Other
+*******************************/
+
+html /deep/ [segment], html /deep/ segment {
+  display: block;
+  position: relative;
+  -webkit-box-sizing: border-box;
+  -ms-box-sizing: border-box;
+  box-sizing: border-box;
+  margin: 1em 0.5em;
+  padding: 1em;
+  background-color: white;
+  -webkit-box-shadow: 0px 0px 0px 1px rgba(0, 0, 0, 0.1);
+  box-shadow: 0px 0px 0px 1px rgba(0, 0, 0, 0.1);
+  border-radius: 5px 5px 5px 5px;
+}
+
+</style>
+
+<script src="../../polymer/polymer.js"></script>
+<!--<link rel="import" href="../polymer-dev/polymer.html">--> 
+<!--
+Copyright (c) 2014 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+<!--
+@group Polymer Core Elements
+
+The `<core-selection>` element is used to manage selection state. It has no
+visual appearance and is typically used in conjunction with another element.
+For example, [core-selector](#core-selector)
+use a `<core-selection>` to manage selection.
+
+To mark an item as selected, call the `select(item)` method on 
+`<core-selection>`. The item itself is an argument to this method.
+
+The `<core-selection>`element manages selection state for any given set of
+items. When an item is selected, the `core-select` event is fired.
+
+The attribute `multi` indicates if multiple items can be selected at once.
+  
+Example:
+ 
+    <polymer-element name="selection-example">
+       <template>
+         <style>
+           polyfill-next-selector { content: ':host > .selected'; }
+           ::content > .selected {
+             font-weight: bold;
+             font-style: italic;
+           }
+         </style>
+         <ul on-tap="{{itemTapAction}}">
+           <content></content>
+         </ul>
+         <core-selection id="selection" multi
+                         on-core-select="{{selectAction}}"></core-selection>
+       </template>
+       <script>
+         Polymer('selection-example', {
+           itemTapAction: function(e, detail, sender) {
+             this.$.selection.select(e.target);
+           },
+           selectAction: function(e, detail, sender) {
+             detail.item.classList.toggle('selected', detail.isSelected);
+           }
+         });
+       </script>
+    </polymer-element>
+
+    <selection-example>
+      <li>Red</li>
+      <li>Green</li>
+      <li>Blue</li>
+    </selection-example>
+ 
+@element core-selection
+-->
+
+<!--
+Fired when an item's selection state is changed. This event is fired both
+when an item is selected or deselected. The `isSelected` detail property
+contains the selection state.
+
+@event core-select
+@param {Object} detail
+  @param {boolean} detail.isSelected true for selection and false for de-selection
+  @param {Object} detail.item the item element
+-->
+
+
+<polymer-element name="core-selection" attributes="multi" hidden assetpath="../core-selection/">
+  
+</polymer-element>
+
+
+<polymer-element name="core-selector" attributes="selected multi valueattr selectedClass selectedProperty selectedAttribute selectedItem selectedModel selectedIndex notap target itemsSelector activateEvent" assetpath="../core-selector/">
+
+  <template>
+    <core-selection id="selection" multi="{{multi}}" on-core-select="{{selectionSelect}}"></core-selection>
+    <content id="items" select="*"></content>
+  </template>
+
+  
+</polymer-element>
+</div>
+
+<div hidden><!--
+Copyright (c) 2014 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+
+<!--
+Copyright (c) 2014 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+
+
+<!--
+Copyright (c) 2014 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+<!--
+
+The `core-style` element helps manage styling inside other elements and can 
+be used to make themes. The `core-style` element can be either a producer 
+or consumer of styling. If it has its `id` property set, it's a producer. 
+Elements that are producers should include css styling as their text content.
+If a `core-style` has its `ref` property set, it's a consumer. A `core-style`
+typically sets its `ref` property to the value of the `id` property of the
+`core-style` it wants to use. This allows a single producer to be used in 
+multiple places, for example, in many different elements.
+
+It's common to place `core-style` producer elements inside HTMLImports.
+Remote stylesheets should be included this way, the &#64;import css mechanism is
+not currently supported.
+
+Here's a basic example:
+
+    <polymer-element name="x-test" noscript>
+      <template>
+        <core-style ref="x-test"></core-style>
+        <content></content>
+      </template>
+    </polymer-element>
+
+The `x-test` element above will be styled by any `core-style` elements that have
+`id` set to `x-test`. These `core-style` producers are separate from the element
+definition, allowing a user of the element to style it independent of the author's 
+styling. For example:
+
+    <core-style id="x-test">
+      :host {
+        backgound-color: steelblue;
+      }
+    </core-style>
+
+The content of the `x-test` `core-style` producer gets included inside the
+shadowRoot of the `x-test` element. If the content of the `x-test` producer
+`core-style` changes, all consumers of it are automatically kept in sync. This
+allows updating styling on the fly.
+
+The `core-style` element also supports bindings and it is the producer 
+`core-style` element is the model for its content. Here's an example:
+
+    <core-style id="x-test">
+      :host {
+        background-color: {{myColor}};
+      }
+    </core-style>
+    <script>
+      document._currentScript.ownerDocument.getElementById('x-test').myColor = 'orange';
+    </script>
+
+Finally, to facilitate sharing data between `core-style` elements, all
+`core-style` elements have a `g` property which is set to the global 
+`CoreStyle.g`. Here's an example:
+
+    <core-style id="x-test">
+      :host {
+        background-color: {{g.myColor}};
+      }
+    </core-style>
+    <script>
+      CoreStyle.g.myColor = 'tomato';
+    </script>
+
+Finally, one `core-style` can be nested inside another. The `core-style`
+element has a `list` property which is a map of all the `core-style` producers.
+A `core-style` producer's content is available via its `cssText` property. 
+Putting this together:
+
+    <core-style id="common">
+      :host {
+        font-family: sans-serif;
+      }
+    </core-style>
+
+    <core-style id="x-test">
+      {{list.common.cssText}}
+
+      :host {
+        background-color: {{g.myColor}};
+      }
+    </core-style>
+
+
+@group Polymer Core Elements
+@element core-style
+@homepage github.io
+-->
+
+
+
+<polymer-element name="core-style" hidden assetpath="../core-style/">
+
+</polymer-element>
+
+<!--
+Copyright (c) 2014 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+
+<!--
+
+`<core-transition>` is an abstraction of an animation. It is used to implement pluggable
+transitions, for example in `<core-overlay>`. You can extend this class to create a custom
+animation, instantiate it, and import it where you need the animation.
+
+All instances of `<core-transition>` are stored in a single database with `type=transition`.
+For more about the database, please see the documentation for `<core-meta>`.
+
+Each instance of `<core-transition>` objects are shared across all the clients, so you should
+not store state information specific to the animated element in the transition. Rather, store
+it on the element.
+
+Example:
+
+my-transition.html:
+
+    <polymer-element name="my-transition" extends="core-transition">
+        <script>
+            go: function(node) {
+                node.style.transition = 'opacity 1s ease-out';
+                node.style.opacity = 0;
+            }
+        </script>
+    </polymer-element>
+
+    <my-transition id="my-fade-out"></my-transition>
+
+my-transition-demo.html:
+
+    <link href="components/core-meta/core-meta.html" rel="import">
+    <link href="my-transition.html" rel="import">
+
+    <div id="animate-me"></div>
+
+    <script>
+        // Get the core-transition
+        var meta = document.createElement('core-meta');
+        meta.type = 'transition';
+        var transition = meta.byId('my-fade-out');
+
+        // Run the animation
+        var animated = document.getElementById('animate-me');
+        transition.go(animated);
+    </script>
+
+@group Polymer Core Elements
+@element core-transition
+@extends core-meta
+@status beta
+@homepage github.io
+-->
+<!--
+Fired when the animation finishes.
+
+@event core-transitionend
+@param {Object} detail
+@param {Object} detail.node The animated node
+-->
+
+<!--
+Copyright (c) 2014 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+
+<!--
+`core-meta` provides a method of constructing a self-organizing database.
+It is useful to collate element meta-data for things like catalogs and for 
+designer.
+
+Example, an element folder has a `metadata.html` file in it, that contains a 
+`core-meta`, something like this:
+
+    <core-meta id="my-element" label="My Element">
+      <property name="color" value="blue"></property>
+    </core-meta>
+
+An application can import as many of these files as it wants, and then use 
+`core-meta` again to access the collected data.
+
+    <script>
+      var meta = document.createElement('core-meta');
+      console.log(meta.list); // dump a list of all meta-data elements that have been created
+    </script>
+
+Use `byId(id)` to retrive a specific core-meta.
+
+    <script>
+      var meta = document.createElement('core-meta');
+      console.log(meta.byId('my-element'));
+    </script>
+
+By default all meta-data are stored in a single databse.  If your meta-data 
+have different types and want them to be stored separately, use `type` to 
+differentiate them.
+
+Example:
+
+    <core-meta id="x-foo" type="xElt"></core-meta>
+    <core-meta id="x-bar" type="xElt"></core-meta>
+    <core-meta id="y-bar" type="yElt"></core-meta>
+
+    <script>
+      var meta = document.createElement('core-meta');
+      meta.type = 'xElt';
+      console.log(meta.list);
+    </script>
+
+@group Polymer Core Elements
+@element core-meta
+@homepage github.io
+-->
+
+
+
+<polymer-element name="core-meta" attributes="label type" hidden assetpath="../core-meta/">
+
+</polymer-element>
+
+
+<polymer-element name="core-transition" extends="core-meta" assetpath="../core-transition/">
+  
+  
+</polymer-element>
+
+<!--
+
+`core-transition-pages` represents a page transition, which may include CSS and/or
+script. It will look for a `core-style` element with the same `id` to install in the
+scope of the `core-animated-pages` that's using the transition.
+
+Example:
+
+    <core-style id="fooTransition">
+        // some CSS here
+    </core-style>
+    <core-transition-pages id="fooTransition"></core-transition-pages>
+
+There are three stages to a page transition:
+
+1. `prepare`: Called to set up the incoming and outgoing pages to the "before" state,
+  e.g. setting the incoming page to `opacity: 0` for `cross-fade` or find and
+  measure hero elements for `hero-transition`.
+
+2. `go`: Called to run the transition. For CSS-based transitions, this generally
+  applies a CSS `transition` property.
+
+3. `complete`: Called when the elements are finished transitioning.
+
+See the individual transition documentation for specific details.
+
+@element core-transition-pages
+@extends core-transition
+@status beta
+@homepage github.io
+-->
+<!--
+Fired when the transition completes.
+
+@event core-transitionend
+-->
+<polymer-element name="core-transition-pages" extends="core-transition" assetpath="transitions/">
+
+</polymer-element>
+
+
+<core-style id="hero-transition">
+  /* Hide heroes that are not currently transitioning */
+  polyfill-next-selector { content: &apos;:host &gt; [animate]:not(.core-selected) [hero]&apos;; }
+  ::content &gt; [animate]:not(.core-selected) /deep/ [hero] {
+    opacity: 0;
+  }
+
+  polyfill-next-selector { content: &apos;:host &gt; .core-selected[animate] [hero]&apos;; }
+  ::content &gt; .core-selected[animate] /deep/ [hero] {
+    opacity: 1;
+    z-index: 10000;
+  }
+
+  polyfill-next-selector { content: &apos;:host &gt; * [hero-p]&apos;; }
+  ::content &gt; * /deep/ [hero-p] {
+    -webkit-transition: box-shadow 100ms ease-out;
+    transition: box-shadow 100ms ease-out;
+  }
+
+  polyfill-next-selector { content: &apos;:host &gt; [animate] [hero-p]&apos;; }
+  ::content &gt; [animate] /deep/ [hero-p] {
+    box-shadow: none !important;
+  }
+</core-style>
+
+
+<!--
+
+`hero-transition` transforms two elements in different pages such that they appear
+to be shared across the pages.
+
+Example:
+
+    <core-animated-pages transition="hero-transition">
+      <section layout horizontal>
+        <div id="div1" flex></div>
+        <div id="div2" flex hero-id="shared" hero></div>
+      </section>
+      <section>
+      <section layout horizontal>
+        <div id="div3" flex hero-id="shared" hero></div>
+        <div id="div4" flex></div>
+      </section>
+      </section>
+    </core-animated-pages>
+
+In the above example, the elements `#div2` and `#div3` shares the same `hero-id`
+attribute and a single element appears to translate and scale smoothly between
+the two positions during a page transition.
+
+Both elements from the source and destination pages must share the same `hero-id`
+and must both contain the `hero` attribute to trigger the transition. The separate
+`hero` attribute allows you to use binding to configure the transition:
+
+Example:
+
+    <core-animated-pages transition="hero-transition">
+      <section layout horizontal>
+        <div id="div1" flex hero-id="shared" hero?="{{selected == 0}}"></div>
+        <div id="div2" flex hero-id="shared" hero?="{{selected == 1}}"></div>
+      </section>
+      <section>
+      <section layout horizontal>
+        <div id="div3" flex hero-id="shared" hero></div>
+      </section>
+      </section>
+    </core-animated-pages>
+
+In the above example, either `#div1` or `#div2` scales to `#div3` during a page transition,
+depending on the value of `selected`.
+
+Because it is common to share elements with different `border-radius` values, by default
+this transition will also animate the `border-radius` property.
+
+You can configure the duration of the hero transition with the global variable
+`CoreStyle.g.transitions.heroDuration`.
+
+@class hero-transition
+@extends core-transition-pages
+@status beta
+@homepage github.io
+-->
+<polymer-element name="hero-transition" extends="core-transition-pages" assetpath="transitions/">
+
+</polymer-element>
+
+<hero-transition id="hero-transition"></hero-transition>
+</div>
+<div hidden><!--
+Copyright (c) 2014 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+
+
+
+<core-style id="cross-fade">
+  polyfill-next-selector { content: &apos;:host &gt; * [cross-fade]&apos;; }
+  ::content &gt; * /deep/ [cross-fade] {
+    -webkit-transition: opacity {{g.transitions.xfadeDuration || g.transitions.duration}} cubic-bezier(0.4, 0, 0.2, 1);
+    transition: opacity {{g.transitions.xfadeDuration || g.transitions.duration}} cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  polyfill-next-selector { content: &apos;:host &gt; * [cross-fade][bg]&apos;; }
+  ::content &gt; * /deep/ [cross-fade][bg] {
+    -webkit-transition: background-color {{g.transitions.xfadeDuration || g.transitions.duration}} cubic-bezier(0.4, 0, 0.2, 1);
+    transition: background-color {{g.transitions.xfadeDuration || g.transitions.duration}} cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  polyfill-next-selector { content: &apos;:host &gt; * [cross-fade][hero-p]&apos;; }
+  ::content &gt; * /deep/ [cross-fade][hero-p] {
+    -webkit-transition: background-color {{g.transitions.xfadeDuration || g.transitions.duration}} cubic-bezier(0.4, 0, 0.2, 1);
+    transition: background-color {{g.transitions.xfadeDuration || g.transitions.duration}} cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  polyfill-next-selector { content: &apos;:host &gt; .core-selected [cross-fade]&apos;; }
+  ::content &gt; .core-selected /deep/ [cross-fade] {
+    opacity: 1;
+  }
+
+  polyfill-next-selector { content: &apos;:host &gt; [animate]:not(.core-selected) [cross-fade]:not([hero-p]):not([bg])&apos;; }
+  ::content &gt; [animate]:not(.core-selected) /deep/ [cross-fade]:not([hero-p]):not([bg]) {
+    opacity: 0;
+  }
+
+  polyfill-next-selector { content: &apos;:host &gt; [animate]:not(.core-selected) [cross-fade][bg]&apos;; }
+  ::content &gt; [animate]:not(.core-selected) /deep/ [cross-fade][bg] {
+    background-color: rgba(0, 0, 0, 0);
+  }
+
+  polyfill-next-selector { content: &apos;:host &gt; [animate]:not(.core-selected) [cross-fade][hero-p]&apos;; }
+  ::content &gt; [animate]:not(.core-selected) /deep/ [cross-fade][hero-p] {
+    background-color: rgba(0, 0, 0, 0);
+  }
+</core-style>
+
+<core-style id="cross-fade-delayed">
+  polyfill-next-selector { content: &apos;:host &gt; * [cross-fade-delayed]&apos;; }
+  ::content &gt; * /deep/ [cross-fade-delayed] {
+    -webkit-transition: opacity {{g.transitions.xfadeDuration || g.transitions.duration}} ease-out;
+    transition: opacity {{g.transitions.xfadeDuration || g.transitions.duration}} ease-out;
+  }
+
+  polyfill-next-selector { content: &apos;:host &gt; .core-selected [cross-fade-delayed]&apos;; }
+  ::content &gt; .core-selected /deep/ [cross-fade-delayed] {
+    -webkit-transition: opacity {{g.transitions.xfadeDuration || g.transitions.duration}} ease-out {{g.transitions.xfadeDelay || g.transitions.xfadeDuration || g.transitions.duration}};
+    transition: opacity {{g.transitions.xfadeDuration || g.transitions.duration}} ease-out {{g.transitions.xfadeDelay || g.transitions.xfadeDuration || g.transitions.duration}};
+  }
+
+  polyfill-next-selector { content: &apos;:host &gt; [animate]:not(.core-selected) [cross-fade-delayed]&apos;; }
+  ::content &gt; [animate]:not(.core-selected) /deep/ [cross-fade-delayed] {
+    opacity: 0;
+  }
+
+  polyfill-next-selector { content: &apos;:host &gt; .core-selected [cross-fade-delayed]&apos;; }
+  ::content &gt; .core-selected /deep/ [cross-fade-delayed] {
+    opacity: 1;
+  }
+
+</core-style>
+
+<core-style id="cross-fade-all">
+  /* cross-fade-all: cross fade everything except for heroes and their parents */
+  polyfill-next-selector { content: &apos;:host(.cross-fade-all) &gt; * *:not([hero]):not([hero-p]):not([cross-fade])&apos;; }
+  :host(.cross-fade-all) ::content &gt; * /deep/ *:not([hero]):not([hero-p]):not([cross-fade]) {
+    -webkit-transition: opacity {{g.transitions.xfadeDuration || g.transitions.duration}} ease-out;
+    transition: opacity {{g.transitions.xfadeDuration || g.transitions.duration}} ease-out;
+  }
+
+  polyfill-next-selector { content: &apos;:host(.cross-fade-all) &gt; [animate]:not(.core-selected) *:not([hero]):not([hero-p]):not([cross-fade])&apos;; }
+  :host(.cross-fade-all) ::content &gt; [animate]:not(.core-selected) /deep/ *:not([hero]):not([hero-p]):not([cross-fade]) {
+    opacity: 0;
+  }
+
+  polyfill-next-selector { content: &apos;:host(.cross-fade-all) &gt; .core-selected *:not([hero])&apos;; }
+  .host(.cross-fade-all) ::content &gt; .core-selected /deep/ * {
+    opacity: 1;
+  }
+
+  /* Only background-color is allowed for the hero&apos;s parents, no opacity transitions */
+  polyfill-next-selector { content: &apos;:host(.cross-fade-all) &gt; * [hero-p]&apos;; }
+  :host(.cross-fade-all) ::content &gt; * /deep/ [hero-p] {
+    -webkit-transition: background-color {{g.transitions.xfadeDuration || g.transitions.duration}} ease-out;
+    transition: background-color {{g.transitions.xfadeDuration || g.transitions.duration}} ease-out;
+    opacity: 1;
+  }
+
+  polyfill-next-selector { content: &apos;:host(.cross-fade-all) &gt; [animate]:not(.core-selected) [hero-p]&apos;; }
+  :host(.cross-fade-all) ::content &gt; [animate]:not(.core-selected) /deep/ [hero-p] {
+    background-color: rgba(0, 0, 0, 0);
+  }
+</core-style>
+
+<!--
+
+`cross-fade` fades out elements in the outgoing page and fades in elements in the
+incoming page during a page transition. You can configure the duration of the
+transition with the global variable `CoreStyle.g.transitions.xfadeDuration`.
+
+Example:
+
+    <core-animated-pages transition="cross-fade">
+      <section>
+        <div id="div1" cross-fade></div>
+      </section>
+      <section>
+        <div id="div2" cross-fade bg>
+          <div id="div3" cross-fade></div>
+          <div id="div4"></div>
+        </div>
+      </section>
+    </core-animated-pages>
+
+In the above example, `#div1` and `#div3` has the `cross-fade` attribute. `#div1`
+will fade out and `#div3` will fade in with opacity transitions when the page switches
+from 0 to 1. Sometimes, you may want to only fade the background color of an element
+but not its children, and you can use the `bg` attribute along with the `#div1`
+attribute as in `#div2`.
+
+@class cross-fade
+@extends core-transition-pages
+@status beta
+@homepage github.io
+
+-->
+
+<!--
+
+`cross-fade-delayed` performs a cross-fade after some delay, either specified in
+the global variable `CoreStyle.g.transitions.xfadeDelay` or the duration of the
+transition.
+
+Example:
+
+    <core-animated-pages transition="hero-transition cross-fade-delayed">
+      <section>
+        <div id="div1" hero-id hero></div>
+      </section>
+      <section>
+        <div id="div2" hero-id hero>
+          <div id="div3" cross-fade-delayed></div>
+        </div>
+      </section>
+    </core-animated-pages>
+
+In the above example, `#div3` fades in after the hero transition from `#div1` to
+`#div2` completes.
+
+@class cross-fade-delayed
+@extends core-transition-pages
+@status beta
+@homepage github.io
+
+-->
+
+<core-transition-pages id="cross-fade"></core-transition-pages>
+<core-transition-pages id="cross-fade-delayed"></core-transition-pages>
+<core-transition-pages id="cross-fade-all" scopeclass="cross-fade-all"></core-transition-pages>
+</div>
+
+<!--
+
+`core-animated-pages` selects one of its children "pages" to show and runs a transition
+when switching between them. The transitions are designed to be pluggable, and can
+accept any object that is an instance of a `core-transition-pages`. Transitions to run
+are specified in the `transitions` attribute as a space-delimited string of `id`s of
+transition elements. Several transitions are available with `core-animated-pages` by
+default, including `hero-transition`, `cross-fade`, and `tile-cascade`.
+
+Example:
+
+    <style>
+      #hero1 {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 300px;
+        height: 300px;
+        background-color: orange;
+      }
+      #hero2 {
+        position: absolute;
+        top: 200px;
+        left: 300px;
+        width: 300px;
+        height: 300px;
+        background-color: orange;
+      }
+      #bottom1, #bottom2 {
+        position: absolute;
+        bottom: 0;
+        top: 0;
+        left: 0;
+        height: 50px;
+      }
+      #bottom1 {
+        background-color: blue;
+      }
+      #bottom2 {
+        background-color: green;
+      }
+    </style>
+    // hero-transition and cross-fade are declared elsewhere
+    <core-animated-pages transitions="hero-transition cross-fade">
+      <section id="page1">
+        <div id="hero1" hero-id="hero" hero></div>
+        <div id="bottom1" cross-fade></div>
+      </section>
+      <section id="page2">
+        <div id="hero2" hero-id="hero" hero></div>
+        <div id="bottom2" cross-fade></div>
+      </section>
+    </core-animated-pages>
+
+In the above example, two transitions (`hero-transition` and `cross-fade`) are run when switching
+between `page1` and `page2`. `hero-transition` transforms elements with the same `hero-id` such
+that they appear to be shared across different pages. `cross-fade` fades out the elements marked
+`cross-fade` in the outgoing page, and fades in those in the incoming page. See the individual
+transition's documentation for specific details.
+
+Finding elements to transition
+------------------------------
+
+In general, a transition is applied to elements marked with a certain attribute. For example,
+`hero-transition` applies the transition on elements with the `hero` and `hero-id` attribute.
+Among the transitions included with `core-animated-pages`, script-based transitions such as
+`hero-transition` generally look for elements up to one level of shadowRoot from the
+`core-animated-pages` element, and CSS-based transitions such as `cross-fade` look for elements
+within any shadowRoot within the `core-animated-pages` element. This means you can use 
+custom elements as pages and mark elements in their shadowRoots as heroes, or mark 
+elements in deeper shadowRoots with other transitions.
+
+Example:
+
+    <polymer-element name="x-el" noscript>
+    <template>
+      <style>
+        #hero {
+          position: absolute;
+          top: 0;
+          right: 0;
+          width: 50px;
+          height: 300px;
+          background-color: blue;
+        }
+      </style>
+      <div id="hero" hero-id="bar" hero></div>
+    </template>
+    </polymer-element>
+
+    <polymer-element name="x-page-1" noscript>
+    <template>
+      <style>
+        #hero1 {
+          position: absolute;
+          top: 0;
+          left: 0;
+          width: 300px;
+          height: 300px;
+          background-color: orange;
+        }
+      </style>
+      <div id="hero1" hero-id="foo" hero></div>
+      <div id="hero2" hero-id="bar" hero></div>
+    </template>
+    </polymer-element>
+
+    <polymer-element name="x-page-2" noscript>
+    <template>
+      <style>
+        #hero1 {
+          position: absolute;
+          top: 200px;
+          left: 300px;
+          width: 300px;
+          height: 300px;
+          background-color: orange;
+        }
+        #hero2 {
+          background-color: blue;
+          height: 150px;
+          width: 400px;
+        }
+      </style>
+      // The below element is one level of shadow from the core-animated-pages and will
+      // be transitioned.
+      <div id="hero1" hero-id="foo" hero></div>
+      // The below element contains a hero inside its shadowRoot making it two levels away
+      // from the core-animated-pages, and will not be transitioned.
+      <x-el></x-el>
+    </template>
+    </polymer-element>
+
+    <core-animated-pages transitions="hero-transition">
+      <x-page-1></x-page-1>
+      <x-page-2></x-page-2>
+    </core-animated-pages>
+
+Note that the container element of the page does not participate in the transition.
+
+    // This does not work
+    <core-animated-pages transitions="cross-fade">
+      <section cross-fade></section>
+      <section cross-fade></section>
+    </core-animated-pages>
+
+    // This works
+    <core-animated-pages transitions="cross-fade">
+      <section>
+        <div cross-fade></div>
+      </section>
+      <section>
+        <div cross-fade></div>
+      </section>
+    </core-animated-pages>
+
+Dynamically setting up transitions
+----------------------------------
+
+An easy way to dynamically set up transitions dynamically is to use property binding on
+the transition attributes. 
+
+Example:
+
+    <core-animated-pages selected="{{selected}}">
+      <section id="page1">
+        <div hero-id="hero" hero></div>
+      </section>
+      <section id="page2">
+        <div id="foo" hero-id="hero" hero?="{{selected === 1 || selected === 0}}" cross-fade="{{selected === 2}}"></div>
+      </section>
+      <section id="page3">
+      </section>
+    </core-animated-pages>
+
+In the above example, the "foo" element only behaves as a hero element if transitioning between
+`#page1` and `#page2`. It gets cross-faded when transition to or from `#page3`.
+
+Nesting pages
+-------------
+
+It is possible to nest core-animated-pages elements for organization. Excessive nesting is
+not encouraged, however, since it makes setting up the transition more complex.
+
+To nest core-animated-pages, the page containing the nested core-animated-pages element should
+have a `selectedItem` property bound to the `selectedItem` property of the nested element. This
+will allow the outer core-animated-pages to know which nested page it is actually transitioning
+to.
+
+Example:
+
+    <polymer-element name="nested-page" attributes="selectedItem">
+    <template>
+      <core-animated-pages selectedItem="{{selectedItem}}">
+        ...
+      </core-animated-pages>
+    </template>
+    </polymer-element>
+
+    <core-animated-pages>
+      <section id="page1"></section>
+      <nested-page id="page2"></section>
+    </core-animated-pages>
+
+@element core-animated-pages
+@extends core-selector
+@status beta
+@homepage github.io
+-->
+<!--
+Fired before a page transition occurs. Both pages involved in the transition are visible when
+this event fires. This is useful if there is something the client needs to do when a page becomes
+visible.
+
+@event core-animated-pages-transition-prepare
+-->
+<!--
+Fired when a page transition completes.
+
+@event core-animated-pages-transition-end
+-->
+<polymer-element name="core-animated-pages" extends="core-selector" notap="" attributes="transitions" assetpath="">
+
+<template>
+
+  <style>:host {
+  display: block;
+  position: relative;
+}
+
+polyfill-next-selector { content: ':host > *'; }
+::content > * {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+}
+
+polyfill-next-selector { content: ':host > *:not(.core-selected):not([animate])'; }
+::content > *:not(.core-selected):not([animate]) {
+  display: none !important;
+}
+</style>
+
+  <shadow></shadow>
+
+</template>
+
+
+
+</polymer-element>
+<script src="../core-animated-pages.js"></script></div>
+  <div hidden><!--
+Copyright (c) 2014 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+
+<!--
+Copyright (c) 2014 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+
+
+<!--
+Copyright (c) 2014 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+<!--
+
+The `core-style` element helps manage styling inside other elements and can 
+be used to make themes. The `core-style` element can be either a producer 
+or consumer of styling. If it has its `id` property set, it's a producer. 
+Elements that are producers should include css styling as their text content.
+If a `core-style` has its `ref` property set, it's a consumer. A `core-style`
+typically sets its `ref` property to the value of the `id` property of the
+`core-style` it wants to use. This allows a single producer to be used in 
+multiple places, for example, in many different elements.
+
+It's common to place `core-style` producer elements inside HTMLImports.
+Remote stylesheets should be included this way, the &#64;import css mechanism is
+not currently supported.
+
+Here's a basic example:
+
+    <polymer-element name="x-test" noscript>
+      <template>
+        <core-style ref="x-test"></core-style>
+        <content></content>
+      </template>
+    </polymer-element>
+
+The `x-test` element above will be styled by any `core-style` elements that have
+`id` set to `x-test`. These `core-style` producers are separate from the element
+definition, allowing a user of the element to style it independent of the author's 
+styling. For example:
+
+    <core-style id="x-test">
+      :host {
+        backgound-color: steelblue;
+      }
+    </core-style>
+
+The content of the `x-test` `core-style` producer gets included inside the
+shadowRoot of the `x-test` element. If the content of the `x-test` producer
+`core-style` changes, all consumers of it are automatically kept in sync. This
+allows updating styling on the fly.
+
+The `core-style` element also supports bindings and it is the producer 
+`core-style` element is the model for its content. Here's an example:
+
+    <core-style id="x-test">
+      :host {
+        background-color: {{myColor}};
+      }
+    </core-style>
+    <script>
+      document._currentScript.ownerDocument.getElementById('x-test').myColor = 'orange';
+    </script>
+
+Finally, to facilitate sharing data between `core-style` elements, all
+`core-style` elements have a `g` property which is set to the global 
+`CoreStyle.g`. Here's an example:
+
+    <core-style id="x-test">
+      :host {
+        background-color: {{g.myColor}};
+      }
+    </core-style>
+    <script>
+      CoreStyle.g.myColor = 'tomato';
+    </script>
+
+Finally, one `core-style` can be nested inside another. The `core-style`
+element has a `list` property which is a map of all the `core-style` producers.
+A `core-style` producer's content is available via its `cssText` property. 
+Putting this together:
+
+    <core-style id="common">
+      :host {
+        font-family: sans-serif;
+      }
+    </core-style>
+
+    <core-style id="x-test">
+      {{list.common.cssText}}
+
+      :host {
+        background-color: {{g.myColor}};
+      }
+    </core-style>
+
+
+@group Polymer Core Elements
+@element core-style
+@homepage github.io
+-->
+
+
+
+<polymer-element name="core-style" hidden assetpath="../../core-style/">
+
+</polymer-element>
+
+<!--
+Copyright (c) 2014 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+
+<!--
+
+`<core-transition>` is an abstraction of an animation. It is used to implement pluggable
+transitions, for example in `<core-overlay>`. You can extend this class to create a custom
+animation, instantiate it, and import it where you need the animation.
+
+All instances of `<core-transition>` are stored in a single database with `type=transition`.
+For more about the database, please see the documentation for `<core-meta>`.
+
+Each instance of `<core-transition>` objects are shared across all the clients, so you should
+not store state information specific to the animated element in the transition. Rather, store
+it on the element.
+
+Example:
+
+my-transition.html:
+
+    <polymer-element name="my-transition" extends="core-transition">
+        <script>
+            go: function(node) {
+                node.style.transition = 'opacity 1s ease-out';
+                node.style.opacity = 0;
+            }
+        </script>
+    </polymer-element>
+
+    <my-transition id="my-fade-out"></my-transition>
+
+my-transition-demo.html:
+
+    <link href="components/core-meta/core-meta.html" rel="import">
+    <link href="my-transition.html" rel="import">
+
+    <div id="animate-me"></div>
+
+    <script>
+        // Get the core-transition
+        var meta = document.createElement('core-meta');
+        meta.type = 'transition';
+        var transition = meta.byId('my-fade-out');
+
+        // Run the animation
+        var animated = document.getElementById('animate-me');
+        transition.go(animated);
+    </script>
+
+@group Polymer Core Elements
+@element core-transition
+@extends core-meta
+@status beta
+@homepage github.io
+-->
+<!--
+Fired when the animation finishes.
+
+@event core-transitionend
+@param {Object} detail
+@param {Object} detail.node The animated node
+-->
+
+
+
+<polymer-element name="core-transition" extends="core-meta" assetpath="../../core-transition/">
+  
+  
+</polymer-element>
+
+<!--
+
+`core-transition-pages` represents a page transition, which may include CSS and/or
+script. It will look for a `core-style` element with the same `id` to install in the
+scope of the `core-animated-pages` that's using the transition.
+
+Example:
+
+    <core-style id="fooTransition">
+        // some CSS here
+    </core-style>
+    <core-transition-pages id="fooTransition"></core-transition-pages>
+
+There are three stages to a page transition:
+
+1. `prepare`: Called to set up the incoming and outgoing pages to the "before" state,
+  e.g. setting the incoming page to `opacity: 0` for `cross-fade` or find and
+  measure hero elements for `hero-transition`.
+
+2. `go`: Called to run the transition. For CSS-based transitions, this generally
+  applies a CSS `transition` property.
+
+3. `complete`: Called when the elements are finished transitioning.
+
+See the individual transition documentation for specific details.
+
+@element core-transition-pages
+@extends core-transition
+@status beta
+@homepage github.io
+-->
+<!--
+Fired when the transition completes.
+
+@event core-transitionend
+-->
+<polymer-element name="core-transition-pages" extends="core-transition" assetpath="../transitions/">
+
+</polymer-element>
+
+
+<core-style id="slide-up">
+  polyfill-next-selector { content: &apos;:host.slide-up &gt; * [slide-up]&apos;; }
+  :host(.slide-up) ::content &gt; * /deep/ [slide-up] {
+    -webkit-transition: -webkit-transform {{g.transitions.slideDuration || g.transitions.duration}} cubic-bezier(0.4, 0, 0.2, 1);
+    transition: transform {{g.transitions.slideDuration || g.transitions.duration}} cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  polyfill-next-selector { content: &apos;:host &gt; .core-selected [slide-up]&apos;; }
+  ::content &gt; .core-selected /deep/ [slide-up] {
+    -webkit-transform: none;
+    transform: none;
+  }
+
+  polyfill-next-selector { content: &apos;:host &gt; [animate]:not(.core-selected) [slide-up]&apos;; }
+  ::content &gt; [animate]:not(.core-selected) /deep/ [slide-up] {
+    -webkit-transform: translateY(150%);
+    transform: translateY(150%);
+  }
+</core-style>
+
+<core-style id="slide-up-offscreen">
+  polyfill-next-selector { content: &apos;:host.slide-up-offscreen &gt; * [slide-up-offscreen]&apos;; }
+  :host(.slide-up-offscreen) ::content &gt; * /deep/ [slide-up-offscreen] {
+    -webkit-transition: -webkit-transform {{g.transitions.slideDuration || g.transitions.duration}} cubic-bezier(0.4, 0, 0.2, 1);
+    transition: transform {{g.transitions.slideDuration || g.transitions.duration}} cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  polyfill-next-selector { content: &apos;:host &gt; .core-selected [slide-up-offscreen]&apos;; }
+  ::content &gt; .core-selected /deep/ [slide-up-offscreen] {
+    -webkit-transform: none;
+    transform: none;
+  }
+
+  polyfill-next-selector { content: &apos;:host &gt; [animate]:not(.core-selected) [slide-up-offscreen]&apos;; }
+  ::content &gt; [animate]:not(.core-selected) /deep/ [slide-up-offscreen] {
+    -webkit-transform: translateY(100vh);
+    transform: translateY(100vh);
+    z-index: -1;
+  }
+
+  polyfill-rule {
+    content: &apos;:host &gt; [animate]:not(.core-selected) [slide-up-offscreen]&apos;;
+    -webkit-transform: translateY(1000px);
+  }
+</core-style>
+
+<!--
+
+`slide-up` slides an element in the outgoing page from the bottom of the window
+and slides in an element in the incoming page from the bottom of the window during
+a page transition. You can configure the duration of the transition with the global
+variable `CoreStyle.g.transitions.slideDuration`.
+
+Example:
+
+    <core-animated-pages transition="slide-up">
+      <section>
+        <div id="div1" slide-up></div>
+      </section>
+      <section></section>
+    </core-animated-pages>
+
+@class slide-up
+@extends core-transition-pages
+@status beta
+@homepage github.io
+
+-->
+
+<core-transition-pages id="slide-up" activeclass="slide-up"></core-transition-pages>
+<core-transition-pages id="slide-up-offscreen" activeclass="slide-up-offscreen"></core-transition-pages>
+</div>
+  <div hidden><!--
+Copyright (c) 2014 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+
+
+
+
+<core-style id="list-cascade">
+  polyfill-next-selector { content: &apos;:host.list-cascade &gt; * [list-cascade]&apos;; }
+  :host(.list-cascade) ::content &gt; * [list-cascade] * {
+    -webkit-transition: -webkit-transform 1s cubic-bezier(0.4, 0, 0.2, 1), opacity {{g.transitions.cascade || g.transitions.duration}} cubic-bezier(0.4, 0, 0.2, 1);
+    transition: transform 1s cubic-bezier(0.4, 0, 0.2, 1), opacity {{g.transitions.cascade || g.transitions.duration}} cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  polyfill-next-selector { content: &apos;:host &gt; .core-selected [list-cascade] *&apos;; }
+  ::content &gt; .core-selected [list-cascade] * {
+    -webkit-transform: none;
+    transform: none;
+  }
+
+  polyfill-next-selector { content: &apos;:host &gt; *:not(.core-selected) [list-cascade] *&apos;; }
+  ::content &gt; *:not(.core-selected) [list-cascade] * {
+    -webkit-transform: translateY(200%);
+    transform: translateY(200%);
+    opacity: 0.2;
+  }
+
+  polyfill-next-selector { content: &apos;:host &gt; .core-selected [list-cascade] *:nth-child(2)&apos;; }
+  ::content &gt; .core-selected [list-cascade] *:nth-child(2) {
+    -webkit-transition-delay: 0.1s;
+    transition-delay: 0.1s;
+  }
+
+  polyfill-next-selector { content: &apos;:host &gt; .core-selected [list-cascade] *:nth-child(3)&apos;; }
+  ::content &gt; .core-selected [list-cascade] *:nth-child(3) {
+    -webkit-transition-delay: 0.2s;
+    transition-delay: 0.2s;
+  }
+
+  polyfill-next-selector { content: &apos;:host &gt; .core-selected [list-cascade] *:nth-child(4)&apos;; }
+  ::content &gt; .core-selected [list-cascade] *:nth-child(4) {
+    -webkit-transition-delay: 0.3s;
+    transition-delay: 0.3s;
+  }
+  
+  polyfill-next-selector { content: &apos;:host &gt; .core-selected [list-cascade] *:nth-child(5)&apos;; }
+  ::content &gt; .core-selected [list-cascade] *:nth-child(5) {
+    -webkit-transition-delay: 0.4s;
+    transition-delay: 0.4s;
+  }
+</core-style>
+
+<core-transition-pages id="list-cascade" activeclass="list-cascade"></core-transition-pages></div>
+
+  <style>
+    body {
+      font-family: 'Roboto 2', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+      margin: 0;
+      background: #f1f1f1;
+    }
+
+    quiz-demo {
+      display: block;
+      position: absolute;
+      top: 0;
+      left: 0;
+      bottom: 0;
+      right: 0;
+    }
+  </style>
+</head>
+<body>
+
+  <polymer-element name="quiz-demo" assetpath="">
+  <template>
+
+    <style>
+      core-animated-pages {
+        height: 100%;
+      }
+
+      section {
+        overflow: hidden;
+      }
+
+      .fab {
+        position: absolute;
+        fill: #fff;
+      }
+
+      .fab-0 {
+        bottom: 50px;
+        right: 24px;
+      }
+
+      .fab-1 {
+        top: 210px;
+        right: 24px;
+      }
+
+      paper-fab {
+        background-color: #ff4081;
+      }
+
+      .top {
+        background-color: #ffff8d;
+      }
+
+      .top-image {
+        background: url(quiz1-intro.png);
+        height: 287px;
+        width: 202px;
+      }
+
+      .bottom {
+        box-sizing: border-box;
+        position: relative;
+        height: 80px;
+        background-color: #ffeb3b;
+        padding: 24px;
+        color: #fff;
+        font-size: 32px;
+      }
+
+      .tall-toolbar {
+        box-sizing: border-box;
+        height: 240px;
+        position: relative;
+        color: #fff;
+        padding: 48px;
+        font-size: 48px;
+      }
+
+      .tall-toolbar.categories {
+        background-color: #00bbd3;
+        margin-bottom: 2px;
+      }
+
+      .tall-toolbar.questions {
+        background-color: #ffeb3b;
+      }
+
+      .middle {
+        background-color: #fafafa;
+        color: #3f3f3f;
+        padding: 24px 48px;
+        font-size: 24px;
+        line-height: 1.5;
+      }
+
+      .footer {
+        height: 80px;
+      }
+
+      .avatar {
+        height: 80px;
+        width: 80px;
+        background-color: #ff80ab;
+      }
+
+      .footer-right, .score {
+        border-top: 1px solid #ccc;
+        background-color: #fff;
+        padding: 30px;
+      }
+
+      .tile {
+        box-sizing: border-box;
+        float: left;
+        height: 200px;
+        width: 49%;
+        margin: 3px;
+      }
+
+      .tile-bottom {
+        padding: 8px;
+        color: #fff;
+      }
+    </style>
+
+    <core-animated-pages selected="{{page}}" transitions="hero-transition slide-up slide-down cross-fade list-cascade" on-core-animated-pages-transition-end="{{complete}}">
+
+      <section layout="" vertical="">
+
+        <div class="tall-toolbar categories" slide-down="">
+          <span>Your name here</span>
+        </div>
+
+        <div class="tiles-container">
+          <div class="tile" style="background-color:#ccc;" layout="" vertical="">
+            <div class="tile-top" flex=""></div>
+            <div class="tile-bottom" style="background-color:#aaa;">
+              Leaderboard
+            </div>
+          </div>
+          <div class="tile" hero-id="category-image" hero="" style="background-color:#ffff8d;" layout="" vertical="" on-tap="{{transition}}">
+            <div class="tile-top" flex=""></div>
+            <div class="tile-bottom" hero-id="footer" hero="" style="background-color:#ffeb3b;">
+              General Knowledge
+            </div>
+          </div>
+          <div class="tile" style="background-color:#b9f6ca;" layout="" vertical="">
+            <div class="tile-top" flex=""></div>
+            <div class="tile-bottom" style="background-color:#0f9d58;">
+              Category 2
+            </div>
+          </div>
+          <div class="tile" style="background-color:#ff8a80;" layout="" vertical="">
+            <div class="tile-top" flex=""></div>
+            <div class="tile-bottom" style="background-color:#db4437;">
+              Category 3
+            </div>
+          </div>
+          <div class="tile" style="background-color:#82b1ff;" layout="" vertical="">
+            <div class="tile-top" flex=""></div>
+            <div class="tile-bottom" style="background-color:#4285f4;">
+              Category 4
+            </div>
+          </div>
+          <div class="tile" style="background-color:#b388ff;" layout="" vertical="">
+            <div class="tile-top" flex=""></div>
+            <div class="tile-bottom" style="background-color:#7e57c2;">
+              Category 5
+            </div>
+          </div>
+        </div>
+
+      </section>
+
+      <section layout="" vertical="">
+
+        <div class="top" hero-id="category-image" hero="" flex="" layout="" horizontal="" center="" center-justified="">
+          <div class="top-image" cross-fade=""></div>
+        </div>
+        <div class="bottom" hero-id="footer" hero="" cross-fade="">
+          <span cross-fade="">General Knowledge</span>
+        </div>
+        <div class="fab fab-0" hero-id="fab" hero="">
+          <paper-fab icon="av:play-arrow" on-tap="{{transition}}" hero=""></paper-fab>
+        </div>
+      </section>
+
+      <section layout="" vertical="">
+
+        <div class="tall-toolbar questions" hero-id="footer" hero="">
+          <span cross-fade="">Question here</span>
+        </div>
+        <div class="fab fab-1" hero-id="fab" hero="">
+          <paper-fab icon="av:play-arrow" on-tap="{{transition}}" hero=""></paper-fab>
+        </div>
+
+        <div flex="" class="middle" slide-up="" list-cascade="">
+          <p>Option 1</p>
+          <p>Option 2</p>
+          <p>Option 3</p>
+          <p>Option 4</p>
+          <p>Option 5</p>
+        </div>
+
+        <div class="footer" layout="" horizontal="" slide-up="">
+          <div class="avatar"></div>
+          <div class="footer-right" flex="">
+            some text here
+          </div>
+          <div class="score">
+            32 pts
+          </div>
+        </div>
+
+      </section>
+
+    </core-animated-pages>
+
+  </template>
+  
+  </polymer-element>
+
+  <quiz-demo></quiz-demo>
+<script src="quiz1.js"></script></body>
+</html>

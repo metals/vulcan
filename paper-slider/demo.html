@@ -1,0 +1,2290 @@
+<!doctype html>
+<html>
+<head>
+  <title>paper-slider</title>
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  
+  <script src="../platform/platform.js"></script>
+  
+  <div hidden><!--
+Copyright (c) 2014 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+
+<!--
+`paper-slider` allows user to select a value from a range of values by
+moving the slider thumb.  The interactive nature of the slider makes it a 
+great choice for settings that reflect intensity levels, such as volume, 
+brightness, or color saturation.
+
+Example:
+
+    <paper-slider></paper-slider>
+
+Use `min` and `max` to specify the slider range.  Default is 0 to 100.
+
+Example:
+
+    <paper-slider min="10" max="200" value="110"></paper-slider>
+
+Styling slider:
+
+To change the slider progress bar color:
+
+    paper-slider::shadow #sliderBar::shadow #activeProgress {
+      background-color: #0f9d58;
+    }
+
+To change the slider knob color:
+
+    paper-slider::shadow #sliderKnobInner {
+      background-color: #0f9d58;
+    }
+
+To change the slider pin color:
+
+    paper-slider::shadow #sliderKnobInner::before {
+      background-color: #0f9d58;
+    }
+
+To change the slider pin's value:
+
+    paper-slider::shadow #sliderKnobInner::after {
+      color: #0f9d58
+    }
+
+To change the slider secondary progress bar color:
+
+    paper-slider::shadow #sliderBar::shadow #secondaryProgress {
+      background-color: #0f9d58;
+    }
+
+@group Paper Elements
+@element paper-slider
+@extends core-range
+@homepage github.io
+-->
+
+<!--
+Copyright (c) 2014 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+
+<!--
+The progress bars are for situations where the percentage completed can be 
+determined. They give users a quick sense of how much longer an operation 
+will take.
+
+Example:
+
+    <paper-progress value="10"></paper-progress>
+    
+There is also a secondary progress which is useful for displaying intermediate 
+progress, such as the buffer level during a streaming playback progress bar.
+
+Example:
+
+    <paper-progress value="10" secondaryProgesss="30"></paper-progress>
+
+Styling progress bar:
+
+To change the active progress bar color:
+
+    paper-progress::shadow #activeProgress {
+      background-color: #e91e63;
+    }
+
+To change the secondary progress bar color:
+
+    paper-progress::shadow #secondaryProgress {
+      background-color: #f8bbd0;
+    }
+    
+To change the progress bar background color:
+
+    paper-progress::shadow #progressContainer {
+      background-color: #64ffda;
+    }
+
+@group Paper Elements
+@element paper-progress
+@extends core-range
+@homepage github.io
+-->
+
+<div hidden><!--
+Copyright (c) 2014 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+
+<!--
+The `core-range` element is used for managing a numeric value within a given 
+range.  It has no visual appearance and is typically used in conjunction with 
+another element.
+
+One can build a progress bar using `core-range` like this:
+
+    <core-range min="0" max="200" value="100" ratio="{{ratio}}"></core-range>
+    <div class="progress-bar" style="width: {{ratio}}%;"></div>
+
+@group Polymer Core Elements
+@element core-range
+@homepage github.io
+
+-->
+
+<div hidden><!--
+Copyright (c) 2014 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+
+<!--
+Copyright (c) 2014 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+<style shim-shadowdom="">
+/*******************************
+          Flex Layout
+*******************************/
+
+html /deep/ [layout][horizontal], html /deep/ [layout][vertical] {
+  display: -ms-flexbox;
+  display: -webkit-flex;
+  display: flex;
+}
+
+html /deep/ [layout][horizontal][inline], html /deep/ [layout][vertical][inline] {
+  display: -ms-inline-flexbox;
+  display: -webkit-inline-flex;
+  display: inline-flex;
+}
+
+html /deep/ [layout][horizontal] {
+  -ms-flex-direction: row;
+  -webkit-flex-direction: row;
+  flex-direction: row;
+}
+
+html /deep/ [layout][horizontal][reverse] {
+  -ms-flex-direction: row-reverse;
+  -webkit-flex-direction: row-reverse;
+  flex-direction: row-reverse;
+}
+
+html /deep/ [layout][vertical] {
+  -ms-flex-direction: column;
+  -webkit-flex-direction: column;
+  flex-direction: column;
+}
+
+html /deep/ [layout][vertical][reverse] {
+  -ms-flex-direction: column-reverse;
+  -webkit-flex-direction: column-reverse;
+  flex-direction: column-reverse;
+}
+
+html /deep/ [layout][wrap] {
+  -ms-flex-wrap: wrap;
+  -webkit-flex-wrap: wrap;
+  flex-wrap: wrap;
+}
+
+html /deep/ [layout][wrap-reverse] {
+  -ms-flex-wrap: wrap-reverse;
+  -webkit-flex-wrap: wrap-reverse;
+  flex-wrap: wrap-reverse;
+}
+
+html /deep/ [flex] {
+  -ms-flex: 1;
+  -webkit-flex: 1;
+  flex: 1;
+}
+
+html /deep/ [flex][auto] {
+  -ms-flex: 1 1 auto;
+  -webkit-flex: 1 1 auto;
+  flex: 1 1 auto;
+}
+
+html /deep/ [flex][none] {
+  -ms-flex: none;
+  -webkit-flex: none;
+  flex: none;
+}
+
+html /deep/ [flex][one] {
+  -ms-flex: 1;
+  -webkit-flex: 1;
+  flex: 1;
+}
+
+html /deep/ [flex][two] {
+  -ms-flex: 2;
+  -webkit-flex: 2;
+  flex: 2;
+}
+
+html /deep/ [flex][three] {
+  -ms-flex: 3;
+  -webkit-flex: 3;
+  flex: 3;
+}
+
+html /deep/ [flex][four] {
+  -ms-flex: 4;
+  -webkit-flex: 4;
+  flex: 4;
+}
+
+html /deep/ [flex][five] {
+  -ms-flex: 5;
+  -webkit-flex: 5;
+  flex: 5;
+}
+
+html /deep/ [flex][six] {
+  -ms-flex: 6;
+  -webkit-flex: 6;
+  flex: 6;
+}
+
+html /deep/ [flex][seven] {
+  -ms-flex: 7;
+  -webkit-flex: 7;
+  flex: 7;
+}
+
+html /deep/ [flex][eight] {
+  -ms-flex: 8;
+  -webkit-flex: 8;
+  flex: 8;
+}
+
+html /deep/ [flex][nine] {
+  -ms-flex: 9;
+  -webkit-flex: 9;
+  flex: 9;
+}
+
+html /deep/ [flex][ten] {
+  -ms-flex: 10;
+  -webkit-flex: 10;
+  flex: 10;
+}
+
+html /deep/ [flex][eleven] {
+  -ms-flex: 11;
+  -webkit-flex: 11;
+  flex: 11;
+}
+
+html /deep/ [flex][twelve] {
+  -ms-flex: 12;
+  -webkit-flex: 12;
+  flex: 12;
+}
+
+/* alignment in cross axis */
+
+html /deep/ [layout][start] {
+  -ms-flex-align: start;
+  -webkit-align-items: flex-start;
+  align-items: flex-start;
+}
+
+html /deep/ [layout][center], html /deep/ [layout][center-center] {
+  -ms-flex-align: center;
+  -webkit-align-items: center;
+  align-items: center;
+}
+
+html /deep/ [layout][end] {
+  -ms-flex-align: end;
+  -webkit-align-items: flex-end;
+  align-items: flex-end;
+}
+
+/* alignment in main axis */
+
+html /deep/ [layout][start-justified] {
+  -ms-flex-pack: start;
+  -webkit-justify-content: flex-start;
+  justify-content: flex-start;
+}
+
+html /deep/ [layout][center-justified], html /deep/ [layout][center-center] {
+  -ms-flex-pack: center;
+  -webkit-justify-content: center;
+  justify-content: center;
+}
+
+html /deep/ [layout][end-justified] {
+  -ms-flex-pack: end;
+  -webkit-justify-content: flex-end;
+  justify-content: flex-end;
+}
+
+html /deep/ [layout][around-justified] {
+  -ms-flex-pack: around;
+  -webkit-justify-content: space-around;
+  justify-content: space-around;
+}
+
+html /deep/ [layout][justified] {
+  -ms-flex-pack: justify;
+  -webkit-justify-content: space-between;
+  justify-content: space-between;
+}
+
+/* self alignment */
+
+html /deep/ [self-start] {
+  -ms-align-self: flex-start;
+  -webkit-align-self: flex-start;
+  align-self: flex-start;
+}
+
+html /deep/ [self-center] {
+  -ms-align-self: center;
+  -webkit-align-self: center;
+  align-self: center;
+}
+
+html /deep/ [self-end] {
+  -ms-align-self: flex-end;
+  -webkit-align-self: flex-end;
+  align-self: flex-end;
+}
+
+html /deep/ [self-stretch] {
+  -ms-align-self: stretch;
+  -webkit-align-self: stretch;
+  align-self: stretch;
+}
+
+/*******************************
+          Other Layout
+*******************************/
+
+html /deep/ [block] {
+  display: block;
+}
+
+/* ie support for hidden */
+html /deep/ [hidden] {
+  display: none !important;
+}
+
+html /deep/ [relative] {
+  position: relative;
+}
+
+html /deep/ [fit] {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+}
+
+body[fullbleed] {
+  margin: 0;
+  height: 100vh;
+}
+
+/*******************************
+            Other
+*******************************/
+
+html /deep/ [segment], html /deep/ segment {
+  display: block;
+  position: relative;
+  -webkit-box-sizing: border-box;
+  -ms-box-sizing: border-box;
+  box-sizing: border-box;
+  margin: 1em 0.5em;
+  padding: 1em;
+  background-color: white;
+  -webkit-box-shadow: 0px 0px 0px 1px rgba(0, 0, 0, 0.1);
+  box-shadow: 0px 0px 0px 1px rgba(0, 0, 0, 0.1);
+  border-radius: 5px 5px 5px 5px;
+}
+
+</style>
+
+<script src="../polymer/polymer.js"></script>
+<!--<link rel="import" href="../polymer-dev/polymer.html">--> </div>
+
+<polymer-element name="core-range" attributes="value min max step ratio" assetpath="">
+
+</polymer-element>
+<script src="../core-range/core-range.js"></script></div>
+
+<polymer-element name="paper-progress" extends="core-range" attributes="secondaryProgress" assetpath="">
+
+  <template>
+  
+    <style>/*
+Copyright (c) 2014 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+*/
+
+:host {
+  display: inline-block;
+  width: 200px;
+  height: 4px;
+}
+
+#progressContainer {
+  position: relative;
+  height: 100%;
+  background-color: #c8c8c8;
+}
+
+#activeProgress, #secondaryProgress {
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+}
+
+#activeProgress {
+  background-color: #0f9d58;
+}
+
+#secondaryProgress {
+  background-color: #87ceac;
+}</style>
+  
+    <div id="progressContainer" role="progressbar" aria-valuenow="{{value}}" aria-valuemin="{{min}}" aria-valuemax="{{max}}">
+    
+      <div id="secondaryProgress" style="width: {{secondaryRatio}}%;"></div>
+      <div id="activeProgress" style="width: {{ratio}}%;"></div>
+      
+    </div>
+    
+  </template>
+  
+  
+  
+</polymer-element>
+<script src="../paper-progress/paper-progress.js"></script>
+<!--
+Copyright (c) 2014 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE
+The complete set of authors may be found at http://polymer.github.io/AUTHORS
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS
+-->
+
+<!--
+`paper-input` is a single- or multi-line text field where user can enter input.
+It can optionally have a label.
+
+Example:
+
+    <paper-input label="Your Name"></paper-input>
+    <paper-input multiline label="Enter multiple lines here"></paper-input>
+
+Theming
+--------
+
+Set `CoreStyle.g.paperInput.focusedColor` and `CoreStyle.g.paperInput.invalidColor` to theme
+the focused and invalid states.
+
+@group Paper Elements
+@element paper-input
+@extends core-input
+@homepage github.io
+-->
+<div hidden><!--
+Copyright (c) 2014 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+
+<!--
+Copyright (c) 2014 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+<style shim-shadowdom="">
+/*******************************
+          Flex Layout
+*******************************/
+
+html /deep/ [layout][horizontal], html /deep/ [layout][vertical] {
+  display: -ms-flexbox;
+  display: -webkit-flex;
+  display: flex;
+}
+
+html /deep/ [layout][horizontal][inline], html /deep/ [layout][vertical][inline] {
+  display: -ms-inline-flexbox;
+  display: -webkit-inline-flex;
+  display: inline-flex;
+}
+
+html /deep/ [layout][horizontal] {
+  -ms-flex-direction: row;
+  -webkit-flex-direction: row;
+  flex-direction: row;
+}
+
+html /deep/ [layout][horizontal][reverse] {
+  -ms-flex-direction: row-reverse;
+  -webkit-flex-direction: row-reverse;
+  flex-direction: row-reverse;
+}
+
+html /deep/ [layout][vertical] {
+  -ms-flex-direction: column;
+  -webkit-flex-direction: column;
+  flex-direction: column;
+}
+
+html /deep/ [layout][vertical][reverse] {
+  -ms-flex-direction: column-reverse;
+  -webkit-flex-direction: column-reverse;
+  flex-direction: column-reverse;
+}
+
+html /deep/ [layout][wrap] {
+  -ms-flex-wrap: wrap;
+  -webkit-flex-wrap: wrap;
+  flex-wrap: wrap;
+}
+
+html /deep/ [layout][wrap-reverse] {
+  -ms-flex-wrap: wrap-reverse;
+  -webkit-flex-wrap: wrap-reverse;
+  flex-wrap: wrap-reverse;
+}
+
+html /deep/ [flex] {
+  -ms-flex: 1;
+  -webkit-flex: 1;
+  flex: 1;
+}
+
+html /deep/ [flex][auto] {
+  -ms-flex: 1 1 auto;
+  -webkit-flex: 1 1 auto;
+  flex: 1 1 auto;
+}
+
+html /deep/ [flex][none] {
+  -ms-flex: none;
+  -webkit-flex: none;
+  flex: none;
+}
+
+html /deep/ [flex][one] {
+  -ms-flex: 1;
+  -webkit-flex: 1;
+  flex: 1;
+}
+
+html /deep/ [flex][two] {
+  -ms-flex: 2;
+  -webkit-flex: 2;
+  flex: 2;
+}
+
+html /deep/ [flex][three] {
+  -ms-flex: 3;
+  -webkit-flex: 3;
+  flex: 3;
+}
+
+html /deep/ [flex][four] {
+  -ms-flex: 4;
+  -webkit-flex: 4;
+  flex: 4;
+}
+
+html /deep/ [flex][five] {
+  -ms-flex: 5;
+  -webkit-flex: 5;
+  flex: 5;
+}
+
+html /deep/ [flex][six] {
+  -ms-flex: 6;
+  -webkit-flex: 6;
+  flex: 6;
+}
+
+html /deep/ [flex][seven] {
+  -ms-flex: 7;
+  -webkit-flex: 7;
+  flex: 7;
+}
+
+html /deep/ [flex][eight] {
+  -ms-flex: 8;
+  -webkit-flex: 8;
+  flex: 8;
+}
+
+html /deep/ [flex][nine] {
+  -ms-flex: 9;
+  -webkit-flex: 9;
+  flex: 9;
+}
+
+html /deep/ [flex][ten] {
+  -ms-flex: 10;
+  -webkit-flex: 10;
+  flex: 10;
+}
+
+html /deep/ [flex][eleven] {
+  -ms-flex: 11;
+  -webkit-flex: 11;
+  flex: 11;
+}
+
+html /deep/ [flex][twelve] {
+  -ms-flex: 12;
+  -webkit-flex: 12;
+  flex: 12;
+}
+
+/* alignment in cross axis */
+
+html /deep/ [layout][start] {
+  -ms-flex-align: start;
+  -webkit-align-items: flex-start;
+  align-items: flex-start;
+}
+
+html /deep/ [layout][center], html /deep/ [layout][center-center] {
+  -ms-flex-align: center;
+  -webkit-align-items: center;
+  align-items: center;
+}
+
+html /deep/ [layout][end] {
+  -ms-flex-align: end;
+  -webkit-align-items: flex-end;
+  align-items: flex-end;
+}
+
+/* alignment in main axis */
+
+html /deep/ [layout][start-justified] {
+  -ms-flex-pack: start;
+  -webkit-justify-content: flex-start;
+  justify-content: flex-start;
+}
+
+html /deep/ [layout][center-justified], html /deep/ [layout][center-center] {
+  -ms-flex-pack: center;
+  -webkit-justify-content: center;
+  justify-content: center;
+}
+
+html /deep/ [layout][end-justified] {
+  -ms-flex-pack: end;
+  -webkit-justify-content: flex-end;
+  justify-content: flex-end;
+}
+
+html /deep/ [layout][around-justified] {
+  -ms-flex-pack: around;
+  -webkit-justify-content: space-around;
+  justify-content: space-around;
+}
+
+html /deep/ [layout][justified] {
+  -ms-flex-pack: justify;
+  -webkit-justify-content: space-between;
+  justify-content: space-between;
+}
+
+/* self alignment */
+
+html /deep/ [self-start] {
+  -ms-align-self: flex-start;
+  -webkit-align-self: flex-start;
+  align-self: flex-start;
+}
+
+html /deep/ [self-center] {
+  -ms-align-self: center;
+  -webkit-align-self: center;
+  align-self: center;
+}
+
+html /deep/ [self-end] {
+  -ms-align-self: flex-end;
+  -webkit-align-self: flex-end;
+  align-self: flex-end;
+}
+
+html /deep/ [self-stretch] {
+  -ms-align-self: stretch;
+  -webkit-align-self: stretch;
+  align-self: stretch;
+}
+
+/*******************************
+          Other Layout
+*******************************/
+
+html /deep/ [block] {
+  display: block;
+}
+
+/* ie support for hidden */
+html /deep/ [hidden] {
+  display: none !important;
+}
+
+html /deep/ [relative] {
+  position: relative;
+}
+
+html /deep/ [fit] {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+}
+
+body[fullbleed] {
+  margin: 0;
+  height: 100vh;
+}
+
+/*******************************
+            Other
+*******************************/
+
+html /deep/ [segment], html /deep/ segment {
+  display: block;
+  position: relative;
+  -webkit-box-sizing: border-box;
+  -ms-box-sizing: border-box;
+  box-sizing: border-box;
+  margin: 1em 0.5em;
+  padding: 1em;
+  background-color: white;
+  -webkit-box-shadow: 0px 0px 0px 1px rgba(0, 0, 0, 0.1);
+  box-shadow: 0px 0px 0px 1px rgba(0, 0, 0, 0.1);
+  border-radius: 5px 5px 5px 5px;
+}
+
+</style>
+
+<script src="../polymer/polymer.js"></script>
+<!--<link rel="import" href="../polymer-dev/polymer.html">--> </div>
+<div hidden><!--
+Copyright (c) 2014 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE
+The complete set of authors may be found at http://polymer.github.io/AUTHORS
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS
+-->
+
+<!--
+/**
+ * core-input is an unstyled single- or multi-line text field where user can
+ * enter input.
+ *
+ * Example:
+ *
+ *     <core-input placeholder="Placeholder text here"></core-input>
+ *
+ *     <core-input multiline placeholder="Enter multiple lines here"></core-input>
+ *
+ * The text input's value is considered "committed" if the user hits the "enter"
+ * key or blurs the input after changing the value. The `change` event is fired
+ * when the value becomes committed, and the committed value is stored in the
+ * `value` property. The current value of the input is stored in the `inputValue`
+ * property.
+ *
+ * Validation
+ * ----------
+ *
+ * core-input can optionally validate the value using the HTML5 constraints API,
+ * similar to native inputs. There are two methods to enable input validation:
+ *
+ * 1. By setting the `type` attribute. For example, setting it to `email` will
+ *    check the value is a valid email, and setting it to `number` will check
+ *    the input is a number.
+ *
+ * 2. By setting attributes related to validation. The attributes are `pattern`,
+ *    `min`, `max`, `step` and `required`.
+ *
+ * Only `required` is supported for multiline inputs currently.
+ *
+ * Example:
+ *
+ *     <core-input type="email" placeholder="enter your email"></core-input>
+ *
+ *     <core-input type="number" min="5" placeholder="enter a number greater than or equal to 5"></core-input>
+ *
+ *     <core-input pattern=".*abc.*" placeholder="enter something containing 'abc'"></core-input>
+ *
+ * See https://developer.mozilla.org/en-US/docs/Web/Guide/HTML/HTML5/Constraint_validation
+ * for more info on validation.
+ *
+ * @group Polymer Core Elements
+ * @element core-input
+ * @homepage github.io
+ */
+-->
+
+<!--
+Fired when the inputValue of is changed. This is the same event as the DOM
+"input" event.
+
+@event input
+-->
+
+<!--
+Fired when the user commits the value of the input, either by the hitting the
+`enter` key or blurring the input after the changing the inputValue. Also see the
+DOM "change" event.
+
+@event change
+-->
+
+<!--
+Fired when the inputValue of this text input changes and fails validation.
+
+@event input-invalid
+@param {Object} detail
+@param {string} value The text input's inputValue.
+-->
+
+<!--
+Fired when the inputValue of this text input changes and passes validation.
+
+@event input-valid
+@param {Object} detail
+@param {string} value The text input's inputValue.
+-->
+<div hidden><!--
+Copyright (c) 2014 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+
+<!--
+Copyright (c) 2014 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+<style shim-shadowdom="">
+/*******************************
+          Flex Layout
+*******************************/
+
+html /deep/ [layout][horizontal], html /deep/ [layout][vertical] {
+  display: -ms-flexbox;
+  display: -webkit-flex;
+  display: flex;
+}
+
+html /deep/ [layout][horizontal][inline], html /deep/ [layout][vertical][inline] {
+  display: -ms-inline-flexbox;
+  display: -webkit-inline-flex;
+  display: inline-flex;
+}
+
+html /deep/ [layout][horizontal] {
+  -ms-flex-direction: row;
+  -webkit-flex-direction: row;
+  flex-direction: row;
+}
+
+html /deep/ [layout][horizontal][reverse] {
+  -ms-flex-direction: row-reverse;
+  -webkit-flex-direction: row-reverse;
+  flex-direction: row-reverse;
+}
+
+html /deep/ [layout][vertical] {
+  -ms-flex-direction: column;
+  -webkit-flex-direction: column;
+  flex-direction: column;
+}
+
+html /deep/ [layout][vertical][reverse] {
+  -ms-flex-direction: column-reverse;
+  -webkit-flex-direction: column-reverse;
+  flex-direction: column-reverse;
+}
+
+html /deep/ [layout][wrap] {
+  -ms-flex-wrap: wrap;
+  -webkit-flex-wrap: wrap;
+  flex-wrap: wrap;
+}
+
+html /deep/ [layout][wrap-reverse] {
+  -ms-flex-wrap: wrap-reverse;
+  -webkit-flex-wrap: wrap-reverse;
+  flex-wrap: wrap-reverse;
+}
+
+html /deep/ [flex] {
+  -ms-flex: 1;
+  -webkit-flex: 1;
+  flex: 1;
+}
+
+html /deep/ [flex][auto] {
+  -ms-flex: 1 1 auto;
+  -webkit-flex: 1 1 auto;
+  flex: 1 1 auto;
+}
+
+html /deep/ [flex][none] {
+  -ms-flex: none;
+  -webkit-flex: none;
+  flex: none;
+}
+
+html /deep/ [flex][one] {
+  -ms-flex: 1;
+  -webkit-flex: 1;
+  flex: 1;
+}
+
+html /deep/ [flex][two] {
+  -ms-flex: 2;
+  -webkit-flex: 2;
+  flex: 2;
+}
+
+html /deep/ [flex][three] {
+  -ms-flex: 3;
+  -webkit-flex: 3;
+  flex: 3;
+}
+
+html /deep/ [flex][four] {
+  -ms-flex: 4;
+  -webkit-flex: 4;
+  flex: 4;
+}
+
+html /deep/ [flex][five] {
+  -ms-flex: 5;
+  -webkit-flex: 5;
+  flex: 5;
+}
+
+html /deep/ [flex][six] {
+  -ms-flex: 6;
+  -webkit-flex: 6;
+  flex: 6;
+}
+
+html /deep/ [flex][seven] {
+  -ms-flex: 7;
+  -webkit-flex: 7;
+  flex: 7;
+}
+
+html /deep/ [flex][eight] {
+  -ms-flex: 8;
+  -webkit-flex: 8;
+  flex: 8;
+}
+
+html /deep/ [flex][nine] {
+  -ms-flex: 9;
+  -webkit-flex: 9;
+  flex: 9;
+}
+
+html /deep/ [flex][ten] {
+  -ms-flex: 10;
+  -webkit-flex: 10;
+  flex: 10;
+}
+
+html /deep/ [flex][eleven] {
+  -ms-flex: 11;
+  -webkit-flex: 11;
+  flex: 11;
+}
+
+html /deep/ [flex][twelve] {
+  -ms-flex: 12;
+  -webkit-flex: 12;
+  flex: 12;
+}
+
+/* alignment in cross axis */
+
+html /deep/ [layout][start] {
+  -ms-flex-align: start;
+  -webkit-align-items: flex-start;
+  align-items: flex-start;
+}
+
+html /deep/ [layout][center], html /deep/ [layout][center-center] {
+  -ms-flex-align: center;
+  -webkit-align-items: center;
+  align-items: center;
+}
+
+html /deep/ [layout][end] {
+  -ms-flex-align: end;
+  -webkit-align-items: flex-end;
+  align-items: flex-end;
+}
+
+/* alignment in main axis */
+
+html /deep/ [layout][start-justified] {
+  -ms-flex-pack: start;
+  -webkit-justify-content: flex-start;
+  justify-content: flex-start;
+}
+
+html /deep/ [layout][center-justified], html /deep/ [layout][center-center] {
+  -ms-flex-pack: center;
+  -webkit-justify-content: center;
+  justify-content: center;
+}
+
+html /deep/ [layout][end-justified] {
+  -ms-flex-pack: end;
+  -webkit-justify-content: flex-end;
+  justify-content: flex-end;
+}
+
+html /deep/ [layout][around-justified] {
+  -ms-flex-pack: around;
+  -webkit-justify-content: space-around;
+  justify-content: space-around;
+}
+
+html /deep/ [layout][justified] {
+  -ms-flex-pack: justify;
+  -webkit-justify-content: space-between;
+  justify-content: space-between;
+}
+
+/* self alignment */
+
+html /deep/ [self-start] {
+  -ms-align-self: flex-start;
+  -webkit-align-self: flex-start;
+  align-self: flex-start;
+}
+
+html /deep/ [self-center] {
+  -ms-align-self: center;
+  -webkit-align-self: center;
+  align-self: center;
+}
+
+html /deep/ [self-end] {
+  -ms-align-self: flex-end;
+  -webkit-align-self: flex-end;
+  align-self: flex-end;
+}
+
+html /deep/ [self-stretch] {
+  -ms-align-self: stretch;
+  -webkit-align-self: stretch;
+  align-self: stretch;
+}
+
+/*******************************
+          Other Layout
+*******************************/
+
+html /deep/ [block] {
+  display: block;
+}
+
+/* ie support for hidden */
+html /deep/ [hidden] {
+  display: none !important;
+}
+
+html /deep/ [relative] {
+  position: relative;
+}
+
+html /deep/ [fit] {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+}
+
+body[fullbleed] {
+  margin: 0;
+  height: 100vh;
+}
+
+/*******************************
+            Other
+*******************************/
+
+html /deep/ [segment], html /deep/ segment {
+  display: block;
+  position: relative;
+  -webkit-box-sizing: border-box;
+  -ms-box-sizing: border-box;
+  box-sizing: border-box;
+  margin: 1em 0.5em;
+  padding: 1em;
+  background-color: white;
+  -webkit-box-shadow: 0px 0px 0px 1px rgba(0, 0, 0, 0.1);
+  box-shadow: 0px 0px 0px 1px rgba(0, 0, 0, 0.1);
+  border-radius: 5px 5px 5px 5px;
+}
+
+</style>
+
+<script src="../polymer/polymer.js"></script>
+<!--<link rel="import" href="../polymer-dev/polymer.html">--> </div>
+
+<polymer-element name="core-input" on-focus="{{focusAction}}" assetpath="">
+
+  <template>
+
+    <style>:host {
+  display: inline-block;
+  text-align: inherit;
+  color: #ccc;
+  position: relative;
+  width: 20em;
+}
+
+:host:hover {
+  cursor: text;
+}
+
+input,
+textarea {
+  font: inherit;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  background-color: transparent;
+  border: none;
+  outline: none;
+  width: 100%;
+}
+
+textarea {
+  resize: none;
+}
+
+textarea[fit] {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+}</style>
+
+    <template if="{{multiline}}">
+      <textarea id="input" value="{{inputValue}}" rows="{{rows}}" fit?="{{rows === &apos;fit&apos;}}" disabled?="{{disabled}}" placeholder="{{placeholder}}" autofocus?="{{autofocus}}" required?="{{required}}" readonly?="{{readonly}}" aria-label="{{label || placeholder}}" aria-invalid="{{invalid}}" on-change="{{inputChangeAction}}" on-focus="{{inputFocusAction}}" on-blur="{{inputBlurAction}}"></textarea>
+    </template>
+
+    <template if="{{!multiline}}">
+      <input id="input" value="{{inputValue}}" disabled?="{{disabled}}" type="{{type}}" placeholder="{{placeholder}}" autofocus?="{{autofocus}}" required?="{{required}}" readonly?="{{readonly}}" pattern="{{pattern}}" min="{{min}}" max="{{max}}" step="{{step}}" maxlength="{{maxlength}}" aria-label="{{label || placeholder}}" aria-invalid="{{invalid}}" on-keydown="{{keydownAction}}" on-change="{{inputChangeAction}}" on-focus="{{inputFocusAction}}" on-blur="{{inputBlurAction}}">
+    </template>
+
+  </template>
+
+  
+
+</polymer-element>
+<script src="../core-input/core-input.js"></script></div>
+<div hidden><!--
+Copyright (c) 2014 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+<!--
+
+The `core-style` element helps manage styling inside other elements and can 
+be used to make themes. The `core-style` element can be either a producer 
+or consumer of styling. If it has its `id` property set, it's a producer. 
+Elements that are producers should include css styling as their text content.
+If a `core-style` has its `ref` property set, it's a consumer. A `core-style`
+typically sets its `ref` property to the value of the `id` property of the
+`core-style` it wants to use. This allows a single producer to be used in 
+multiple places, for example, in many different elements.
+
+It's common to place `core-style` producer elements inside HTMLImports.
+Remote stylesheets should be included this way, the &#64;import css mechanism is
+not currently supported.
+
+Here's a basic example:
+
+    <polymer-element name="x-test" noscript>
+      <template>
+        <core-style ref="x-test"></core-style>
+        <content></content>
+      </template>
+    </polymer-element>
+
+The `x-test` element above will be styled by any `core-style` elements that have
+`id` set to `x-test`. These `core-style` producers are separate from the element
+definition, allowing a user of the element to style it independent of the author's 
+styling. For example:
+
+    <core-style id="x-test">
+      :host {
+        backgound-color: steelblue;
+      }
+    </core-style>
+
+The content of the `x-test` `core-style` producer gets included inside the
+shadowRoot of the `x-test` element. If the content of the `x-test` producer
+`core-style` changes, all consumers of it are automatically kept in sync. This
+allows updating styling on the fly.
+
+The `core-style` element also supports bindings and it is the producer 
+`core-style` element is the model for its content. Here's an example:
+
+    <core-style id="x-test">
+      :host {
+        background-color: {{myColor}};
+      }
+    </core-style>
+    <script>
+      document._currentScript.ownerDocument.getElementById('x-test').myColor = 'orange';
+    </script>
+
+Finally, to facilitate sharing data between `core-style` elements, all
+`core-style` elements have a `g` property which is set to the global 
+`CoreStyle.g`. Here's an example:
+
+    <core-style id="x-test">
+      :host {
+        background-color: {{g.myColor}};
+      }
+    </core-style>
+    <script>
+      CoreStyle.g.myColor = 'tomato';
+    </script>
+
+Finally, one `core-style` can be nested inside another. The `core-style`
+element has a `list` property which is a map of all the `core-style` producers.
+A `core-style` producer's content is available via its `cssText` property. 
+Putting this together:
+
+    <core-style id="common">
+      :host {
+        font-family: sans-serif;
+      }
+    </core-style>
+
+    <core-style id="x-test">
+      {{list.common.cssText}}
+
+      :host {
+        background-color: {{g.myColor}};
+      }
+    </core-style>
+
+
+@group Polymer Core Elements
+@element core-style
+@homepage github.io
+-->
+
+<div hidden><!--
+Copyright (c) 2014 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+
+<!--
+Copyright (c) 2014 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+<style shim-shadowdom="">
+/*******************************
+          Flex Layout
+*******************************/
+
+html /deep/ [layout][horizontal], html /deep/ [layout][vertical] {
+  display: -ms-flexbox;
+  display: -webkit-flex;
+  display: flex;
+}
+
+html /deep/ [layout][horizontal][inline], html /deep/ [layout][vertical][inline] {
+  display: -ms-inline-flexbox;
+  display: -webkit-inline-flex;
+  display: inline-flex;
+}
+
+html /deep/ [layout][horizontal] {
+  -ms-flex-direction: row;
+  -webkit-flex-direction: row;
+  flex-direction: row;
+}
+
+html /deep/ [layout][horizontal][reverse] {
+  -ms-flex-direction: row-reverse;
+  -webkit-flex-direction: row-reverse;
+  flex-direction: row-reverse;
+}
+
+html /deep/ [layout][vertical] {
+  -ms-flex-direction: column;
+  -webkit-flex-direction: column;
+  flex-direction: column;
+}
+
+html /deep/ [layout][vertical][reverse] {
+  -ms-flex-direction: column-reverse;
+  -webkit-flex-direction: column-reverse;
+  flex-direction: column-reverse;
+}
+
+html /deep/ [layout][wrap] {
+  -ms-flex-wrap: wrap;
+  -webkit-flex-wrap: wrap;
+  flex-wrap: wrap;
+}
+
+html /deep/ [layout][wrap-reverse] {
+  -ms-flex-wrap: wrap-reverse;
+  -webkit-flex-wrap: wrap-reverse;
+  flex-wrap: wrap-reverse;
+}
+
+html /deep/ [flex] {
+  -ms-flex: 1;
+  -webkit-flex: 1;
+  flex: 1;
+}
+
+html /deep/ [flex][auto] {
+  -ms-flex: 1 1 auto;
+  -webkit-flex: 1 1 auto;
+  flex: 1 1 auto;
+}
+
+html /deep/ [flex][none] {
+  -ms-flex: none;
+  -webkit-flex: none;
+  flex: none;
+}
+
+html /deep/ [flex][one] {
+  -ms-flex: 1;
+  -webkit-flex: 1;
+  flex: 1;
+}
+
+html /deep/ [flex][two] {
+  -ms-flex: 2;
+  -webkit-flex: 2;
+  flex: 2;
+}
+
+html /deep/ [flex][three] {
+  -ms-flex: 3;
+  -webkit-flex: 3;
+  flex: 3;
+}
+
+html /deep/ [flex][four] {
+  -ms-flex: 4;
+  -webkit-flex: 4;
+  flex: 4;
+}
+
+html /deep/ [flex][five] {
+  -ms-flex: 5;
+  -webkit-flex: 5;
+  flex: 5;
+}
+
+html /deep/ [flex][six] {
+  -ms-flex: 6;
+  -webkit-flex: 6;
+  flex: 6;
+}
+
+html /deep/ [flex][seven] {
+  -ms-flex: 7;
+  -webkit-flex: 7;
+  flex: 7;
+}
+
+html /deep/ [flex][eight] {
+  -ms-flex: 8;
+  -webkit-flex: 8;
+  flex: 8;
+}
+
+html /deep/ [flex][nine] {
+  -ms-flex: 9;
+  -webkit-flex: 9;
+  flex: 9;
+}
+
+html /deep/ [flex][ten] {
+  -ms-flex: 10;
+  -webkit-flex: 10;
+  flex: 10;
+}
+
+html /deep/ [flex][eleven] {
+  -ms-flex: 11;
+  -webkit-flex: 11;
+  flex: 11;
+}
+
+html /deep/ [flex][twelve] {
+  -ms-flex: 12;
+  -webkit-flex: 12;
+  flex: 12;
+}
+
+/* alignment in cross axis */
+
+html /deep/ [layout][start] {
+  -ms-flex-align: start;
+  -webkit-align-items: flex-start;
+  align-items: flex-start;
+}
+
+html /deep/ [layout][center], html /deep/ [layout][center-center] {
+  -ms-flex-align: center;
+  -webkit-align-items: center;
+  align-items: center;
+}
+
+html /deep/ [layout][end] {
+  -ms-flex-align: end;
+  -webkit-align-items: flex-end;
+  align-items: flex-end;
+}
+
+/* alignment in main axis */
+
+html /deep/ [layout][start-justified] {
+  -ms-flex-pack: start;
+  -webkit-justify-content: flex-start;
+  justify-content: flex-start;
+}
+
+html /deep/ [layout][center-justified], html /deep/ [layout][center-center] {
+  -ms-flex-pack: center;
+  -webkit-justify-content: center;
+  justify-content: center;
+}
+
+html /deep/ [layout][end-justified] {
+  -ms-flex-pack: end;
+  -webkit-justify-content: flex-end;
+  justify-content: flex-end;
+}
+
+html /deep/ [layout][around-justified] {
+  -ms-flex-pack: around;
+  -webkit-justify-content: space-around;
+  justify-content: space-around;
+}
+
+html /deep/ [layout][justified] {
+  -ms-flex-pack: justify;
+  -webkit-justify-content: space-between;
+  justify-content: space-between;
+}
+
+/* self alignment */
+
+html /deep/ [self-start] {
+  -ms-align-self: flex-start;
+  -webkit-align-self: flex-start;
+  align-self: flex-start;
+}
+
+html /deep/ [self-center] {
+  -ms-align-self: center;
+  -webkit-align-self: center;
+  align-self: center;
+}
+
+html /deep/ [self-end] {
+  -ms-align-self: flex-end;
+  -webkit-align-self: flex-end;
+  align-self: flex-end;
+}
+
+html /deep/ [self-stretch] {
+  -ms-align-self: stretch;
+  -webkit-align-self: stretch;
+  align-self: stretch;
+}
+
+/*******************************
+          Other Layout
+*******************************/
+
+html /deep/ [block] {
+  display: block;
+}
+
+/* ie support for hidden */
+html /deep/ [hidden] {
+  display: none !important;
+}
+
+html /deep/ [relative] {
+  position: relative;
+}
+
+html /deep/ [fit] {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+}
+
+body[fullbleed] {
+  margin: 0;
+  height: 100vh;
+}
+
+/*******************************
+            Other
+*******************************/
+
+html /deep/ [segment], html /deep/ segment {
+  display: block;
+  position: relative;
+  -webkit-box-sizing: border-box;
+  -ms-box-sizing: border-box;
+  box-sizing: border-box;
+  margin: 1em 0.5em;
+  padding: 1em;
+  background-color: white;
+  -webkit-box-shadow: 0px 0px 0px 1px rgba(0, 0, 0, 0.1);
+  box-shadow: 0px 0px 0px 1px rgba(0, 0, 0, 0.1);
+  border-radius: 5px 5px 5px 5px;
+}
+
+</style>
+
+<script src="../polymer/polymer.js"></script>
+<!--<link rel="import" href="../polymer-dev/polymer.html">--> </div>
+
+<polymer-element name="core-style" hidden assetpath="">
+
+</polymer-element>
+<script src="../core-style/core-style.js"></script></div>
+
+<core-style id="paper-input">
+
+#label.focused,
+#floatedLabel.focused {
+  color: {{g.paperInput.focusedColor}};
+}
+
+#underlineHighlight.focused,
+#caretInner {
+  background-color: {{g.paperInput.focusedColor}};
+}
+
+#error,
+:host(.invalid) #label.focused,
+:host(.invalid) #floatedLabel.focused {
+  color: {{g.paperInput.invalidColor}};
+}
+:host(.invalid) #underlineHighlight.focused,
+:host(.invalid) #caretInner {
+  background-color: {{g.paperInput.invalidColor}};
+}
+
+</core-style>
+
+<polymer-element name="paper-input" extends="core-input" attributes="label floatingLabel maxRows error" on-down="{{downAction}}" on-up="{{upAction}}" assetpath="">
+
+  <template>
+
+    <style>:host {
+  display: inline-block;
+  outline: none;
+  text-align: inherit;
+  color: #757575;
+}
+:host(:hover) {
+  cursor: text;
+}
+
+#container {
+  position: relative;
+}
+
+#inputClone,
+#minInputHeight,
+#maxInputHeight {
+  position: absolute;
+  top: 0;
+  left: 0;
+  visibility: hidden;
+  padding: 0.5em 0;
+}
+
+:host /deep/ input,
+:host /deep/ textarea {
+  font: inherit;
+  color: #000;
+  padding: 0;
+  /* Important to use margin here so the margin remains visible
+   * when textarea scrolls internally. */
+  margin: 0.5em 0;
+  background-color: transparent;
+  border: none;
+  outline: none;
+  width: 100%;
+}
+
+:host /deep/ input:invalid,
+:host /deep/ textarea:invalid {
+  box-shadow: none;
+}
+
+.host /deep/ textarea {
+  resize: none;
+}
+
+#floatedLabel {
+  font-size: 0.75em;
+  background: transparent;
+  white-space: nowrap;
+}
+#floatedLabel.hidden {
+  visibility: hidden;
+}
+#floatedLabel.focused {
+  visibility: visible;
+}
+
+#label {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: 100%;
+  padding: 0.5em 0;
+  background: transparent;
+  -moz-transform-origin: 0% 0%;
+  -webkit-transform-origin: 0% 0%;
+  transform-origin: 0% 0%;
+  pointer-events: none;
+}
+#label.hidden {
+  display: none;
+}
+#label.animating {
+  /* TODO: transforms are unprefixed in M36/ Remove when stable. */
+  -webkit-transition: -webkit-transform 0.3s cubic-bezier(0.2, 0, 0.03, 1);
+  transition: transform 0.3s cubic-bezier(0.2, 0, 0.03, 1);
+}
+
+#labelSpan {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  display: inline-block;
+  max-width: 100%;
+}
+
+#errorContainer {
+  visibility: hidden;
+  display: -webkit-flex;
+  display: flex;
+  -webkit-align-items: center;
+  align-items: center;
+}
+
+:host(.invalid) #errorContainer {
+  visibility: visible;
+}
+
+#error {
+  -webkit-flex: 1;
+  flex: 1;
+  font-size: 0.75em;
+  padding: 0.5em 0;
+}
+
+#errorIcon {
+  background-image: url(../paper-input/error-100.png);
+  background-size: 24px 24px;
+  height: 24px;
+  width: 24px;
+}
+
+
+@media (min-resolution: 2dppx) {
+  #errorIcon {
+    background-image: url(../paper-input/error-200.png);
+    background-size: 24px 24px;
+  }
+}
+
+#underlineContainer {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -1px;
+}
+
+:host([multiline]) #underlineContainer {
+  bottom: auto;
+}
+
+:host([multiline]) #underlineContainer.animating {
+  -webkit-transition: top 0.2s ease-in;
+  transition: top 0.2s ease-in;
+}
+
+#underline {
+  height: 1px;
+  background: #757575;
+  border-bottom-color: #757575;
+}
+
+:host([disabled]) #underline {
+  border-bottom: 1px dashed;
+  height: 0px;
+  background: transparent;
+}
+
+#underlineHighlight {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 2px;
+  -webkit-transform: scale(0,2);
+  transform: scale(0,2);
+}
+#underlineHighlight.pressed {
+  -webkit-transform: scale(0.1,2);
+  transform: scale(0.1,2);
+  /* TODO: transforms are unprefixed in M36/ Remove when stable. */
+  -webkit-transition: -webkit-transform 0.1s cubic-bezier(0.2, 0, 0.03, 1);
+  transition: transform 0.3s cubic-bezier(0.2, 0, 0.03, 1);
+}
+#underlineHighlight.animating {
+  /* TODO: transforms are unprefixed in M36/ Remove when stable. */
+  -webkit-transition: -webkit-transform 0.3s cubic-bezier(0.2, 0, 0.03, 1);
+  transition: transform 0.3s cubic-bezier(0.2, 0, 0.03, 1);
+}
+#underlineHighlight.focused {
+  -webkit-transform: scale(1);
+  transform: scale(1);
+}
+
+#caret {
+  display: none;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  opacity: 0;
+  -moz-transform-origin: 0%;
+  -webkit-transform-origin-x: 0%;
+  transform-origin-x: 0%;
+  -webkit-transform: scaleX(1) translateX(10%);
+  transform: scaleX(1) translateX(10%);
+}
+#caret.animating {
+  display: block;
+   /* TODO: transforms are unprefixed in M36/ Remove when stable. */
+  -webkit-transition: -webkit-transform 0.2s ease-out, opacity 0.2s ease-out;
+  transition: transform 0.3s cubic-bezier(0.2, 0, 0.03, 1);
+}
+#caret.focused {
+  display: block;
+  opacity: 0.75;
+  -webkit-transform: scaleX(0) translateX(0);
+  transform: scaleX(0) translateX(0);
+}
+#caretInner {
+  position: absolute;
+  top: 0.6em;
+  left: 0;
+  height: 1.2em;
+  width: 25%;
+}
+</style>
+
+    <core-style ref="paper-input"></core-style>
+
+    <div id="floatedLabel" class="hidden" hidden?="{{!floatingLabel}}"><span id="floatedLabelSpan">{{label}}</span></div>
+
+    <div id="container" on-transitionend="{{transitionEndAction}}" on-webkittransitionend="{{transitionEndAction}}">
+
+      <div id="label"><span id="labelSpan">{{label}}</span></div>
+
+      <div id="inputContainer">
+
+        <div id="inputClone">
+          <span id="inputCloneSpan" aria-hidden="true">&#xA0;</span>
+        </div>
+
+        <template if="{{multiline}}">
+          <div id="minInputHeight"></div>
+          <div id="maxInputHeight"></div>
+        </template>
+
+        <shadow></shadow>
+
+      </div>
+
+      <div id="underlineContainer">
+        <div id="underline"></div>
+        <div id="underlineHighlight" class="focusedColor"></div>
+      </div>
+
+      <div id="caret">
+        <div id="caretInner" class="focusedColor"></div>
+      </div>
+
+    </div>
+
+    <div id="errorContainer">
+      <div id="error" role="alert" aria-hidden="{{!invalid}}">{{error || validationMessage}}</div>
+      <div id="errorIcon"></div>
+    </div>
+
+  </template>
+
+  
+
+</polymer-element>
+<script src="../paper-input/paper-input.js"></script>
+
+<polymer-element name="paper-slider" extends="core-range" attributes="snaps pin disabled secondaryProgress editable immediateValue" assetpath="">
+<template>
+
+  <style>/*
+Copyright (c) 2014 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+*/
+
+:host {
+  display: inline-block;
+  width: 200px;
+  cursor: default;
+}
+
+#sliderContainer {
+  position: relative;
+  width: calc(100% - 32px);
+  height: 32px;
+}
+
+:host([editable]) #sliderContainer {
+  float: left;
+  width: calc(100% - 72px);
+}
+
+#sliderBar {
+  position: absolute;
+  top: 15px;
+  left: 16px;
+  height: 2px;
+  width: 100%;
+  padding: 8px 0;
+  margin: -8px 0;
+}
+
+.slider-markers {
+  position: absolute;
+  top: 15px;
+  left: 15px;
+  height: 2px;
+  width: calc(100% + 2px);
+  box-sizing: border-box;
+  pointer-events: none;
+  /* background-image: -webkit-linear-gradient(0deg, #ccc, #ccc 1px, transparent 1px, transparent);
+  background-size: 10%; */
+}
+
+.slider-markers::after, .slider-marker::after {
+  content: "";
+  display: block;
+  width: 2px;
+  height: 2px;
+  border-radius: 50%;
+  background-color: black;
+}
+
+#sliderBar::shadow #activeProgress {
+  background-color: #3f51b5;
+}
+
+#sliderKnob {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 32px;
+  height: 32px;
+}
+
+#sliderKnob.transiting {
+  transition: left 0.08s ease;
+}
+
+#sliderKnob:focus {
+  outline: none;
+}
+
+#sliderKnob.dragging {
+  transition: none;
+}
+
+#sliderKnob.snaps.dragging {
+  transition: -webkit-transform 0.08s ease;
+  transition: transform 0.08s ease;
+}
+
+#sliderKnobInner {
+  width: 12px;
+  height: 12px;
+  box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  border-radius: 50%;
+  background-color: #3f51b5;
+  /* FIXME(ffu): can't use the following. https://github.com/Polymer/platform/issues/53 */
+  /* transition-property: height, width, background-color, border;
+  transition-duration: 0.1s;
+  transition-timing-function: ease; */
+  transition: height 0.18s ease, width 0.18s ease, background-color 0.28s ease, border 0.18s ease;
+}
+
+#sliderKnob.expand:not(.pin) > #sliderKnobInner {
+  width: 100%;
+  height: 100%;
+  -webkit-transform: translateZ(0);
+  transform: translateZ(0);
+}
+
+#sliderKnob.ring > #sliderKnobInner {
+  background-color: #fff;
+  border: 2px solid #c8c8c8;
+}
+
+#sliderKnobInner::before {
+  background-color: #3f51b5;
+}
+
+#sliderKnob.pin > #sliderKnobInner::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 26px;
+  height: 26px;
+  margin-left: 3px;
+  border-radius: 50% 50% 50% 0;
+  -webkit-transform: rotate(-45deg) scale(0) translate(0);
+  transform: rotate(-45deg) scale(0) translate(0);
+}
+
+#sliderKnobInner::before, #sliderKnobInner::after {
+  transition: -webkit-transform .2s ease, background-color .18s ease;
+  transition: transform .2s ease, background-color .18s ease;
+}
+
+#sliderKnob.pin.ring > #sliderKnobInner::before {
+  background-color: #c8c8c8;
+}
+
+#sliderKnob.pin.expand > #sliderKnobInner::before {
+  -webkit-transform: rotate(-45deg) scale(1) translate(17px, -17px);
+  transform: rotate(-45deg) scale(1) translate(17px, -17px);
+}
+
+#sliderKnob.pin > #sliderKnobInner::after {
+  /* FIXME(ffu): add dummy quotes to workaround https://github.com/Polymer/platform/issues/57 */
+  content: attr(value) "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 32px;
+  height: 26px;
+  text-align: center;
+  color: #fff;
+  font-size: 10px;
+  -webkit-transform: scale(0) translate(0);
+  transform: scale(0) translate(0);
+}
+
+#sliderKnob.pin.expand > #sliderKnobInner::after {
+  -webkit-transform: scale(1) translate(0, -17px);
+  transform: scale(1) translate(0, -17px);
+}
+
+.slider-input {
+  width: 40px;
+  height: 32px;
+  float: right;
+}
+
+.slider-input::shadow input {
+  /* FIXME(ffu): should one be able set text-align directly on paper-input? */
+  text-align: center;
+}
+
+/* disabled state */
+:host([disabled]) #sliderContainer {
+  pointer-events: none;
+}
+
+:host([disabled]) {
+  pointer-events: none;
+}
+
+:host([disabled]) #sliderKnob > #sliderKnobInner {
+  width: 12px;
+  height: 12px;
+  background-color: #c8c8c8;
+  border: 2px solid #fff;
+}
+
+:host([disabled]) #sliderContainer > #sliderBar::shadow #activeProgress {
+  background-color: #c8c8c8;
+}
+</style>
+
+  <div id="sliderContainer" on-keydown="{{keydown}}">
+  
+    <paper-progress id="sliderBar" aria-hidden="true" min="{{min}}" max="{{max}}" value="{{immediateValue}}" secondaryprogress="{{secondaryProgress}}" on-down="{{bardown}}" on-up="{{resetKnob}}" on-trackstart="{{trackStart}}" on-trackx="{{trackx}}" on-trackend="{{trackEnd}}"></paper-progress>
+    
+    <template if="{{snaps &amp;&amp; !disabled}}">
+      <div class="slider-markers" horizontal="" layout="">
+        <template repeat="{{markers}}">
+          <div flex="" class="slider-marker"></div>
+        </template>
+      </div>
+    </template>
+    
+    <div id="sliderKnob" class="{{ {pin : pin, snaps : snaps} | tokenList }}" on-down="{{expandKnob}}" on-up="{{resetKnob}}" on-trackstart="{{trackStart}}" on-trackx="{{trackx}}" on-trackend="{{trackEnd}}" on-transitionend="{{knobTransitionEnd}}" role="slider" aria-valuenow="{{value}}" aria-valuemin="{{min}}" aria-valuemax="{{max}}" aria-valuetext="{{value}}" tabindex="0" center-justified="" center="" horizontal="" layout="">
+        
+      <div id="sliderKnobInner" value="{{immediateValue}}"></div>
+      
+    </div>
+    
+  </div>
+  
+  <template if="{{editable}}">
+    <paper-input id="input" class="slider-input" value="{{immediateValue}}" validate="^[-+]?[0-9]*\.?[0-9]+$" disabled?="{{disabled}}" on-change="{{inputChange}}"></paper-input>
+  </template>
+
+</template>
+
+</polymer-element>
+</div>
+  <div hidden><!--
+Copyright (c) 2014 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+<link href="//fonts.googleapis.com/css?family=RobotoDraft:regular,bold,italic,thin,light,bolditalic,black,medium&amp;lang=en" rel="stylesheet" type="text/css">
+</div>
+  
+  <style shim-shadowdom="">
+  
+    body {
+      font-family: RobotoDraft, 'Helvetica Neue', Helvetica, Arial;
+      margin: 0;
+      padding: 24px;
+      -webkit-user-select: none;
+      -moz-user-select: none;
+      -ms-user-select: none;
+      user-select: none;
+      -webkit-tap-highlight-color: rgba(0,0,0,0);
+      -webkit-touch-callout: none;
+    }
+    
+    paper-slider {
+      width: 100%;
+    }
+    
+    section {
+      max-width: 1000px;
+      padding: 20px 0;
+      background-color: #f0f0f0;
+    }
+    
+    section > div {
+      padding: 14px;
+    }
+    
+    .yellow-slider paper-slider::shadow #sliderKnobInner,
+    .yellow-slider paper-slider::shadow #sliderBar::shadow #activeProgress {
+      background-color: #f4b400;
+    }
+    
+    .green-slider paper-slider::shadow #sliderKnobInner,
+    .green-slider paper-slider::shadow #sliderKnobInner::before,
+    .green-slider paper-slider::shadow #sliderBar::shadow #activeProgress {
+      background-color: #0f9d58;
+    }
+    
+    #ratingsLabel {
+      padding-left: 12px;
+      color: #a0a0a0;
+    }
+    
+  </style>
+  
+</head>
+<body unresolved="">
+
+  <section class="yellow-slider">
+  
+    <div>Music, video, games &amp; other media</div>
+    <paper-slider value="50"></paper-slider>
+    
+    <br>
+    <br>
+    
+    <div>Notifications</div>
+    <paper-slider value="50"></paper-slider>
+    
+    <br>
+    <br>
+    
+    <div>Alarms</div>
+    <paper-slider value="80"></paper-slider>
+    
+  </section>
+  
+  <br>
+  
+  <section>
+  
+    <div center="" horizontal="" layout="">
+      <div>R</div>
+      <paper-slider value="23" max="255" editable=""></paper-slider>
+    </div>
+    
+    <br>
+    <br>
+    
+    <div center="" horizontal="" layout="">
+      <div>G</div>
+      <paper-slider value="183" max="255" editable=""></paper-slider>
+    </div>
+    
+    <br>
+    <br>
+    
+    <div center="" horizontal="" layout="">
+      <div>B</div>
+      <paper-slider value="211" max="255" editable=""></paper-slider>
+    </div>
+    
+  </section>
+  
+  <br>
+  
+  <section class="green-slider">
+  
+    <div>Brightness</div>
+    <br>
+    <paper-slider pin="" value="50"></paper-slider>
+  
+  </section>
+  
+  <br>
+  
+  <section class="green-slider">
+  
+    <div>
+      <span>Ratings</span><span id="ratingsLabel"></span>
+    </div>
+    <br>
+    <paper-slider id="ratings" pin="" snaps="" max="10" step="1" value="5"></paper-slider>
+  
+  </section>
+  
+  
+  
+<script src="demo.js"></script></body>
+</html>
