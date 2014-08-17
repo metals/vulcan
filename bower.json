@@ -13,9 +13,8 @@
   ],
   "license": "MIT",
   "main":[
-    "core-ajax/*.*"
   ],
   "dependencies": {
-
+    "core-ajax": "metals/vulcan/core-ajax"
   }
 }
