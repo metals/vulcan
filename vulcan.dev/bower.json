@@ -12,14 +12,6 @@
     "chromeapp"
   ],
   "license": "MIT",
-  "ignore": [
-    "**/.*",
-    "node_modules",
-    "bower_components",
-    "public/js/bower_components",
-    "test",
-    "tests"
-  ],
   "dependencies": {
     "polymer": "Polymer/polymer#~0.3.5",
     "core-elements": "Polymer/core-elements#~0.3.5",

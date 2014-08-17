@@ -11,5 +11,8 @@
     "polymer",
     "chromeapp"
   ],
-  "license": "MIT"
+  "license": "MIT",
+  "dependencies": {
+
+  }
 }
