@@ -12,6 +12,9 @@
     "chromeapp"
   ],
   "license": "MIT",
+  "main":[
+    "core-ajax/*.*"
+  ],
   "dependencies": {
 
   }
