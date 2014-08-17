@@ -1,0 +1,16 @@
+{
+  "manifest_version": 2,
+  "name": "Vulcan",
+  "short_name": "Vulcan",
+  "description": "Chrome App Quick Start with Vulcanized Polymer Components",
+  "version": "0.0.1.0",
+  "icons": {
+    "16": "assets/html5_16.png",
+    "128": "assets/html5_128.png"
+  },
+  "app": {
+    "background": {
+      "scripts": ["js/background.js"]
+    }
+  }
+}

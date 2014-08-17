@@ -1,20 +1,6 @@
 {
   "name": "vulcan",
   "version": "0.0.0",
-  "homepage": "https://github.com/metals/vulcan",
-  "authors": [
-    "k33g <ph.charriere@gmail.com>"
-  ],
-  "description": "vulcanized polymer components",
-  "keywords": [
-    "vulvanize",
-    "polymer",
-    "chromeapp"
-  ],
-  "license": "MIT",
-  "main":[
-  ],
   "dependencies": {
-    "core-ajax": "metals/vulcan#master/core-ajax"
   }
 }

@@ -2,7 +2,7 @@
 
 ##What?
 
-**Vulcan** is a "Vulcanized Polymer Components Distribution"
+**Vulcan** is a quick start Chrome App with "Vulcanized Polymer Components Distribution"
 
 >>To play with CDE directly on a ChromeBook
 
@@ -17,9 +17,8 @@
 
 ##Rebuild distribution
 
-- git clone this repository, install vulcanize (see [http://www.polymer-project.org/articles/concatenating-web-components.html](http://www.polymer-project.org/articles/concatenating-web-components.html))
-- `cd vulcan.dev`
+- install vulcanize (see [http://www.polymer-project.org/articles/concatenating-web-components.html](http://www.polymer-project.org/articles/concatenating-web-components.html))
+- `cd vulcanized.polymer`
 - `bower update`
-- `cd ..`
 - `./vulcanize.them.all.sh`
 
