@@ -15,6 +15,6 @@
   "main":[
   ],
   "dependencies": {
-    "core-ajax": "metals/vulcan/core-ajax"
+    "core-ajax": "metals/vulcan#master/core-ajax"
   }
 }
