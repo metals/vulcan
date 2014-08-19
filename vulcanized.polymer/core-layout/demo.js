@@ -1,1 +1,0 @@
-Polymer('layout-demo');
